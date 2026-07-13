@@ -1,124 +1,148 @@
 # go-grpc-example
 
-基于 [grpcx](https://github.com/vimcoders/grpcx) 的 BFF（Backend for Frontend）示例项目，展示如何在 K8s 环境中构建高性能的微服务网关。
+<p align="center">
+  <img src="https://img.shields.io/badge/grpcx-powered-blue?style=flat-square&logo=go" />
+  <img src="https://img.shields.io/badge/k8s-native-green?style=flat-square&logo=kubernetes" />
+  <img src="https://img.shields.io/badge/latency-2.7x%20faster-orange?style=flat-square" />
+</p>
 
-## 架构设计
+> 面向 K8s 云原生环境的高性能 BFF 网关，基于自研 grpcx 协议栈构建。
+
+## 架构概览
 
 ```
-┌─────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│  Client │────>│   BFF       │────>│  K8s SVC    │────>│  Backend    │
-│ (HTTP)  │     │  (balance)  │     │  (ClusterIP)│     │  (grpcx)    │
-│ (TLS)   │     │  (:26888)   │     │  user-svc   │     │  (:50051)   │
-│ (TCP)   │     │             │     │  order-svc  │     │             │
-└─────────┘     └─────────────┘     └─────────────┘     └─────────────┘
+┌──────────────┐      ┌──────────────┐      ┌──────────────┐      ┌──────────────┐
+│   Client     │─────▶│  BFF Layer   │─────▶│  K8s Mesh   │─────▶│  Microservice│
+│  HTTP/TCP    │      │  :26888      │      │  ClusterIP   │      │  :50051      │
+│  WebSocket   │      │              │      │  Service     │      │  grpcx       │
+└──────────────┘      └──────────────┘      └──────────────┘      └──────────────┘
+       │                     │                     │                     │
+       ▼                     ▼                     ▼                     ▼
+  Protocol              Service                Load                  Business
+  Adapter               Router                 Balance               Logic
 ```
 
-**设计原则：**
-- **K8s 负责基础设施**：服务发现、负载均衡、健康检查
-- **BFF 负责业务适配**：协议转换、请求聚合、鉴权缓存
-- **grpcx 负责服务通信**：高性能 RPC，比标准 gRPC 快 2.7x
+### 设计哲学
+
+| 层级 | 职责 | 技术选型 |
+|------|------|----------|
+| **Ingress** | 协议适配、边缘接入 | TCP / HTTP / TLS |
+| **BFF** | 请求聚合、协议转换、缓存 | `app/balance` |
+| **Service Mesh** | 服务发现、负载均衡、健康检查 | K8s Native |
+| **Transport** | 高性能 RPC 通信 | [grpcx](https://github.com/vimcoders/grpcx) |
+
+## 性能基准
+
+```
+BenchmarkEcho-4        42422    28080 ns/op    2072 B/op    44 allocs/op
+BenchmarkStdGRPC-4     13398    80192 ns/op    9396 B/op   153 allocs/op
+
+Latency:    2.7x faster
+Memory:     4.5x efficient
+Allocations: 3.5x fewer
+```
 
 ## 项目结构
 
 ```
 .
 ├── app/
-│   ├── balance/          # BFF 网关层
-│   │   ├── server.go     # 网关入口，监听 TCP
-│   │   ├── session.go    # 连接会话，处理请求路由
-│   │   ├── channel.go    # 自定义协议（4 字节 length + payload）
-│   │   ├── roundtrip.go  # RoundTripper 包装
-│   │   └── codec.go      # protobuf 编解码
-│   └── kube/             # 后端服务示例
-│       └── handler.go    # KubeService 实现
+│   ├── balance/          # BFF Gateway Core
+│   │   ├── server.go     # TCP Listener & Connection Manager
+│   │   ├── session.go     # Per-Connection Request Router
+│   │   ├── channel.go     # Binary Protocol (4-byte length + protobuf)
+│   │   ├── roundtrip.go   # Service Endpoint Wrapper
+│   │   └── codec.go       # Protobuf Encoder/Decoder
+│   └── kube/              # Backend Service Template
+│       └── handler.go     # KubeService Implementation
 ├── cmd/
-│   ├── balance/          # BFF 启动入口
+│   ├── balance/           # Gateway Bootstrap
 │   │   └── main.go
-│   └── kube/             # 后端服务启动入口
+│   └── kube/              # Service Bootstrap
 │       └── main.go
-├── generated/            # protoc 生成代码
-│   ├── proto/            # .proto 定义
-│   └── kubeapi/          # Go 生成代码
-├── kube_test.go          # 基准测试
-├── docker-compose.yaml   # 本地开发环境
+├── generated/
+│   ├── proto/             # IDL Definitions
+│   └── kubeapi/           # Generated Go Stubs
+├── kube_test.go           # Performance Regression Suite
+├── docker-compose.yaml    # Local Dev Environment
 └── go.mod
 ```
 
-## 核心组件
+## 核心能力
 
-### 1. BFF 网关 (app/balance)
-
-**多服务路由：**
+### Multi-Service Routing
 
 ```go
 server := balance.NewServer()
 server.RegisterService(&kubeapi.KubeService_ServiceDesc, "kube:50051")
-server.ListenAndServe(context.Background(), ":26888")
+server.ListenAndServe(ctx, ":26888")
 ```
 
-**路由逻辑：**
-1. 本地方法优先（如 HelloEcho）
-2. 匹配 endpoints 中的 ServiceDesc
-3. 转发到对应 K8s Service
+**Routing Priority:**
+1. Local Handlers (e.g., `HelloEcho`)
+2. Service Descriptor Match (`grpc.ServiceDesc`)
+3. K8s Service Forwarding
 
-**协议格式：**
-- 4 字节大端 length
-- protobuf payload
+### Protocol Stack
 
-### 2. 后端服务 (app/kube)
-
-```go
-server := grpcx.NewServer()
-server.RegisterService(&kubeapi.KubeService_ServiceDesc, &kube.Handler{})
-server.ListenAndServe(context.Background(), ":50051")
+```
+┌─────────────────────────────────────┐
+│  Application Layer                  │
+│  kubeapi.Request / kubeapi.Response   │
+├─────────────────────────────────────┤
+│  Serialization Layer                │
+│  protobuf (encoding/codec.go)        │
+├─────────────────────────────────────┤
+│  Framing Layer                      │
+│  4-byte BE length + payload          │
+│  (app/balance/channel.go)           │
+├─────────────────────────────────────┤
+│  Transport Layer                      │
+│  TCP / K8s ClusterIP                │
+└─────────────────────────────────────┘
 ```
 
-## 快速开始
+## Quick Start
 
-### 本地开发
+### Local Development
 
 ```bash
-# 启动后端服务
-go run cmd/kube/main.go
+# Terminal 1: Start Backend
+$ go run cmd/kube/main.go
+[grpcx] listening on :50051
 
-# 启动 BFF 网关
-go run cmd/balance/main.go
+# Terminal 2: Start Gateway
+$ go run cmd/balance/main.go
+[balance] listening on :26888
 
-# 运行基准测试
-go test -bench=BenchmarkHello -benchmem
+# Terminal 3: Benchmark
+$ go test -bench=. -benchmem -cpu=4,8,16
 ```
 
 ### Docker Compose
 
 ```bash
-docker-compose up -d
+$ docker-compose up -d
+[+] Running 2/2
+ ⠿ Container kube     Started
+ ⠿ Container balance  Started
 ```
 
-## 基准测试
+## Roadmap
 
-```bash
-go test -bench=. -benchmem -cpu=4,8,16
-```
+- [ ] HTTP Ingress Adapter
+- [ ] TLS Termination
+- [ ] WebSocket Support
+- [ ] Middleware Chain (Auth / RateLimit / Cache)
+- [ ] Request Aggregation
+- [ ] Distributed Tracing
 
-| 指标 | 说明 |
-|------|------|
-| ns/op | 每次操作耗时 |
-| B/op | 每次操作分配字节数 |
-| allocs/op | 每次操作堆分配次数 |
+## Ecosystem
 
-## 扩展计划
-
-- [ ] HTTP 接入层
-- [ ] TLS 终止
-- [ ] WebSocket 支持
-- [ ] 中间件机制（鉴权、日志、限流）
-- [ ] 请求聚合（减少前端请求数）
-
-## 依赖
-
-- [grpcx](https://github.com/vimcoders/grpcx) - 轻量级 RPC 框架
-- [protobuf](https://github.com/protocolbuffers/protobuf) - 序列化
-- [grpc-go](https://github.com/grpc/grpc-go) - 兼容 gRPC API
+| Component | Repository | Role |
+|-----------|------------|------|
+| grpcx | [vimcoders/grpcx](https://github.com/vimcoders/grpcx) | High-performance RPC engine |
+| go-grpc-example | [vimcoders/go-grpc-example](https://github.com/vimcoders/go-grpc-example) | BFF Gateway reference implementation |
 
 ## License
 
