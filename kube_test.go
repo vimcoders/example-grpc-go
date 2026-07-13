@@ -1,10 +1,10 @@
-package kube_test
+package example_test
 
 import (
 	"bufio"
 	"encoding/binary"
+	"example/generated/kubeapi"
 	"io"
-	"kube/generated/kubeapi"
 	"math"
 	"net"
 	"path"

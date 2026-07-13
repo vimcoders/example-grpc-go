@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"kube/app/kube"
-	"kube/generated/kubeapi"
+	"example/app/kube"
+	"example/generated/kubeapi"
 
 	"github.com/vimcoders/grpcx"
 )

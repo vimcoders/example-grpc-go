@@ -2,7 +2,7 @@ package balance
 
 import (
 	"context"
-	"kube/generated/kubeapi"
+	"example/generated/kubeapi"
 	"net"
 	"sync"
 

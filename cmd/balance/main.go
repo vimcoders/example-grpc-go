@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"kube/app/balance"
-	"kube/generated/kubeapi"
+	"example/app/balance"
+	"example/generated/kubeapi"
 )
 
 func main() {
