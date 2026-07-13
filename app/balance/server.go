@@ -17,7 +17,7 @@ type Server struct {
 	wg        sync.WaitGroup
 	listener  net.Listener
 	closed    context.CancelFunc
-	endpoints []grpcx.ClientConnInterface
+	endpoints []RoundTripper
 }
 
 func NewServer(opt ...Option) *Server {
@@ -63,7 +63,10 @@ func (s *Server) RegisterService(sd *grpc.ServiceDesc, endpoint string) error {
 	if err != nil {
 		return err
 	}
-	s.endpoints = append(s.endpoints, cc)
+	s.endpoints = append(s.endpoints, RoundTripper{
+		sd:                  sd,
+		ClientConnInterface: cc,
+	})
 	return nil
 }
 

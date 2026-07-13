@@ -2,13 +2,12 @@ package balance
 
 import (
 	"context"
-	"kube/generated/api"
+	"kube/generated/kubeapi"
 	"net"
 	"path"
 	"slices"
 	"time"
 
-	"github.com/vimcoders/grpcx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/encoding"
@@ -19,16 +18,22 @@ type Session struct {
 	encoding.Codec
 	desc        *grpc.ServiceDesc
 	interceptor grpc.UnaryServerInterceptor
-	endpoints   []grpcx.ClientConnInterface
+	endpoints   []RoundTripper
 }
 
-func (s *Session) Echo(ctx context.Context, req *api.EchoRequest) (*api.EchoResponse, error) {
-	return &api.EchoResponse{Message: req.Message}, nil
+func (s *Session) Echo(ctx context.Context, req *kubeapi.HelloRequest) (*kubeapi.HelloResponse, error) {
+	for _, v := range s.endpoints {
+		c := kubeapi.NewHelloServiceClient(v)
+		if _, err := c.Echo(ctx, &kubeapi.HelloRequest{}); err != nil {
+			return nil, err
+		}
+	}
+	return &kubeapi.HelloResponse{Message: req.Message}, nil
 }
 
-func (s *Session) RoundTrip(ctx context.Context, req *api.Request) (*api.Response, error) {
+func (s *Session) RoundTrip(ctx context.Context, req *kubeapi.Request) (*kubeapi.Response, error) {
 	if req.Method == "" {
-		return &api.Response{
+		return &kubeapi.Response{
 			Code:    int32(codes.OK),
 			Message: codes.OK.String(),
 		}, nil
@@ -37,7 +42,7 @@ func (s *Session) RoundTrip(ctx context.Context, req *api.Request) (*api.Respons
 		return path.Join("/", s.desc.ServiceName, v.MethodName) == req.Method
 	})
 	if idx < 0 {
-		return &api.Response{
+		return &kubeapi.Response{
 			Code:    int32(codes.Unimplemented),
 			Message: codes.Unimplemented.String(),
 		}, nil
@@ -52,19 +57,19 @@ func (s *Session) RoundTrip(ctx context.Context, req *api.Request) (*api.Respons
 		},
 		s.interceptor)
 	if err != nil {
-		return &api.Response{
+		return &kubeapi.Response{
 			Code:    int32(codes.Unavailable),
 			Message: err.Error(),
 		}, nil
 	}
 	response, err := s.Marshal(reply)
 	if err != nil {
-		return &api.Response{
+		return &kubeapi.Response{
 			Code:    int32(codes.Unavailable),
 			Message: err.Error(),
 		}, nil
 	}
-	return &api.Response{
+	return &kubeapi.Response{
 		Code:    int32(codes.OK),
 		Message: codes.OK.String(),
 		Payload: response,
@@ -83,7 +88,7 @@ func (s *Session) Handle(ctx context.Context, c net.Conn) (err error) {
 			if err != nil {
 				return err
 			}
-			var request api.Request
+			var request kubeapi.Request
 			if err := s.Unmarshal(payload, &request); err != nil {
 				return err
 			}
