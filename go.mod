@@ -1,4 +1,4 @@
-module balance
+module kube
 
 go 1.26.5
 

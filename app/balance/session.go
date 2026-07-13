@@ -1,8 +1,8 @@
 package balance
 
 import (
-	"balance/generated/api"
 	"context"
+	"kube/generated/api"
 	"net"
 	"path"
 	"slices"
