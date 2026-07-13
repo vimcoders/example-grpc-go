@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"kube/app/echo"
+	"kube/app/kube"
 	"kube/generated/kubeapi"
 
 	"github.com/vimcoders/grpcx"
@@ -10,6 +10,6 @@ import (
 
 func main() {
 	server := grpcx.NewServer()
-	server.RegisterService(&kubeapi.HelloService_ServiceDesc, &echo.Handler{})
+	server.RegisterService(&kubeapi.KubeService_ServiceDesc, &kube.Handler{})
 	server.ListenAndServe(context.Background(), ":50051")
 }

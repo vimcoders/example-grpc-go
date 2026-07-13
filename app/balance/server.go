@@ -2,6 +2,7 @@ package balance
 
 import (
 	"context"
+	"kube/generated/kubeapi"
 	"net"
 	"sync"
 
@@ -48,7 +49,11 @@ func (s *Server) ListenAndServe(ctx context.Context, addr string, opt ...Option)
 			return err
 		}
 		s.wg.Go(func() {
-			var session Session
+			session := Session{
+				endpoints: s.endpoints,
+				desc:      &kubeapi.HelloService_ServiceDesc,
+				Codec:     &codec{},
+			}
 			_ = session.Handle(cancelCtx, conn)
 		})
 	}

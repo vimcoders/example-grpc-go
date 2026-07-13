@@ -117,9 +117,9 @@ const file_proto_hello_proto_rawDesc = "" +
 	"\fHelloRequest\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage\")\n" +
 	"\rHelloResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage2E\n" +
-	"\fHelloService\x125\n" +
-	"\x04Echo\x12\x15.kubeapi.HelloRequest\x1a\x16.kubeapi.HelloResponseB\fZ\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage2J\n" +
+	"\fHelloService\x12:\n" +
+	"\tHelloEcho\x12\x15.kubeapi.HelloRequest\x1a\x16.kubeapi.HelloResponseB\fZ\n" +
 	"./;kubeapib\x06proto3"
 
 var (
@@ -140,8 +140,8 @@ var file_proto_hello_proto_goTypes = []any{
 	(*HelloResponse)(nil), // 1: kubeapi.HelloResponse
 }
 var file_proto_hello_proto_depIdxs = []int32{
-	0, // 0: kubeapi.HelloService.Echo:input_type -> kubeapi.HelloRequest
-	1, // 1: kubeapi.HelloService.Echo:output_type -> kubeapi.HelloResponse
+	0, // 0: kubeapi.HelloService.HelloEcho:input_type -> kubeapi.HelloRequest
+	1, // 1: kubeapi.HelloService.HelloEcho:output_type -> kubeapi.HelloResponse
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

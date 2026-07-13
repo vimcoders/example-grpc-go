@@ -8,6 +8,8 @@ import (
 
 func main() {
 	server := balance.NewServer()
-	server.RegisterService(&kubeapi.HelloService_ServiceDesc, ":50051")
+	if err := server.RegisterService(&kubeapi.KubeService_ServiceDesc, "kube:50051"); err != nil {
+		panic(err)
+	}
 	server.ListenAndServe(context.Background(), ":26888")
 }

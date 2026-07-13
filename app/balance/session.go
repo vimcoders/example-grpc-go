@@ -3,11 +3,13 @@ package balance
 import (
 	"context"
 	"kube/generated/kubeapi"
+	"log/slog"
 	"net"
 	"path"
 	"slices"
 	"time"
 
+	"github.com/vimcoders/grpcx/generated/api"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/encoding"
@@ -15,19 +17,15 @@ import (
 )
 
 type Session struct {
+	kubeapi.HelloServiceServer
 	encoding.Codec
 	desc        *grpc.ServiceDesc
 	interceptor grpc.UnaryServerInterceptor
 	endpoints   []RoundTripper
 }
 
-func (s *Session) Echo(ctx context.Context, req *kubeapi.HelloRequest) (*kubeapi.HelloResponse, error) {
-	for _, v := range s.endpoints {
-		c := kubeapi.NewHelloServiceClient(v)
-		if _, err := c.Echo(ctx, &kubeapi.HelloRequest{}); err != nil {
-			return nil, err
-		}
-	}
+func (s *Session) HelloEcho(ctx context.Context, req *kubeapi.HelloRequest) (*kubeapi.HelloResponse, error) {
+	slog.Info("echo", "hello", req)
 	return &kubeapi.HelloResponse{Message: req.Message}, nil
 }
 
@@ -39,40 +37,62 @@ func (s *Session) RoundTrip(ctx context.Context, req *kubeapi.Request) (*kubeapi
 		}, nil
 	}
 	idx := slices.IndexFunc(s.desc.Methods, func(v grpc.MethodDesc) bool {
-		return path.Join("/", s.desc.ServiceName, v.MethodName) == req.Method
+		return v.MethodName == req.Method
 	})
-	if idx < 0 {
+	if idx >= 0 {
+		timeoutCtx, cancel := context.WithTimeout(ctx, time.Duration(req.Timeout)*time.Millisecond)
+		defer cancel()
+		reply, err := s.desc.Methods[idx].Handler(
+			s,
+			timeoutCtx,
+			func(in any) error {
+				return s.Unmarshal(req.Payload, in)
+			},
+			s.interceptor)
+		if err != nil {
+			return &kubeapi.Response{
+				Code:    int32(codes.Unavailable),
+				Message: err.Error(),
+			}, nil
+		}
+		response, err := s.Marshal(reply)
+		if err != nil {
+			return &kubeapi.Response{
+				Code:    int32(codes.Unavailable),
+				Message: err.Error(),
+			}, nil
+		}
 		return &kubeapi.Response{
-			Code:    int32(codes.Unimplemented),
-			Message: codes.Unimplemented.String(),
+			Code:    int32(codes.OK),
+			Message: codes.OK.String(),
+			Payload: response,
 		}, nil
 	}
-	timeoutCtx, cancel := context.WithTimeout(ctx, time.Duration(req.Timeout)*time.Millisecond)
-	defer cancel()
-	reply, err := s.desc.Methods[idx].Handler(
-		s,
-		timeoutCtx,
-		func(in any) error {
-			return s.Unmarshal(req.Payload, in)
-		},
-		s.interceptor)
-	if err != nil {
+	for _, v := range s.endpoints {
+		if ok := slices.ContainsFunc(v.sd.Methods, func(e grpc.MethodDesc) bool {
+			return req.Method == e.MethodName
+		}); !ok {
+			continue
+		}
+		method := path.Join("/", v.sd.ServiceName, req.Method)
+		reply, err := v.RoundTrip(ctx, &api.Request{Method: method, Payload: req.Payload})
+		slog.Info("RoundTrip", "reply", reply, "err", err)
+		if err != nil {
+			return &kubeapi.Response{
+				Code:    int32(codes.Unavailable),
+				Message: err.Error(),
+			}, nil
+		}
 		return &kubeapi.Response{
-			Code:    int32(codes.Unavailable),
-			Message: err.Error(),
+			Code:    reply.Code,
+			Message: reply.Message,
+			Payload: reply.Payload,
 		}, nil
 	}
-	response, err := s.Marshal(reply)
-	if err != nil {
-		return &kubeapi.Response{
-			Code:    int32(codes.Unavailable),
-			Message: err.Error(),
-		}, nil
-	}
+
 	return &kubeapi.Response{
-		Code:    int32(codes.OK),
-		Message: codes.OK.String(),
-		Payload: response,
+		Code:    int32(codes.Unimplemented),
+		Message: codes.Unimplemented.String(),
 	}, nil
 }
 
