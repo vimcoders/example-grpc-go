@@ -4,7 +4,7 @@ WORKDIR /build
 RUN go env -w GOPROXY=https://goproxy.cn,https://mirrors.aliyun.com/goproxy,direct && go env -w GOSUMDB=sum.golang.google.cn
 COPY go.mod .
 COPY go.sum .
-RUN go mod download
+RUN go mod download -x
 COPY . .
 RUN CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -a -o kube ./cmd/kube/main.go
 
