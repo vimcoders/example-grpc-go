@@ -9,5 +9,5 @@ import (
 func main() {
 	server := balance.NewServer()
 	server.RegisterService(&kubeapi.HelloService_ServiceDesc, ":50051")
-	server.ListenAndServe(context.Background(), ":50052")
+	server.ListenAndServe(context.Background(), ":26888")
 }
