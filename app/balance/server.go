@@ -7,14 +7,10 @@ import (
 	"net"
 	"net/http"
 	"path"
-	"slices"
 	"sync"
-	"time"
 
 	"github.com/vimcoders/grpcx"
-	"github.com/vimcoders/grpcx/generated/api"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/encoding"
 )
 
@@ -99,7 +95,12 @@ func (x *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// 从请求头获取身份令牌（前端登录后的 token）
 	authority := r.Header.Get("Authorization")
 	slog.Debug("ServeHTTP", "path", r.URL.Path, "authority", authority)
-	response, err := x.RoundTrip(context.Background(), &api.Request{Method: path.Base(r.URL.Path)})
+	session := Session{
+		endpoints: x.endpoints,
+		desc:      x.desc,
+		Codec:     &codec{},
+	}
+	response, err := session.RoundTrip(context.Background(), &kubeapi.Request{Method: path.Base(r.URL.Path)})
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
@@ -110,78 +111,6 @@ func (x *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	_, _ = w.Write(reply)
-}
-
-func (s *Server) RoundTrip(ctx context.Context, req *api.Request) (*api.Response, error) {
-	if req.Method == "" {
-		return &api.Response{
-			Code:    int32(codes.OK),
-			Message: codes.OK.String(),
-		}, nil
-	}
-	idx := slices.IndexFunc(s.desc.Methods, func(v grpc.MethodDesc) bool {
-		return v.MethodName == req.Method
-	})
-	if idx >= 0 {
-		timeoutCtx, cancel := context.WithTimeout(ctx, time.Duration(req.Timeout)*time.Millisecond)
-		defer cancel()
-		reply, err := s.desc.Methods[idx].Handler(
-			s,
-			timeoutCtx,
-			func(in any) error {
-				return s.Unmarshal(req.Payload, in)
-			},
-			s.interceptor)
-		if err != nil {
-			return &api.Response{
-				Code:    int32(codes.Unavailable),
-				Message: err.Error(),
-			}, nil
-		}
-		response, err := s.Marshal(reply)
-		if err != nil {
-			return &api.Response{
-				Code:    int32(codes.Unavailable),
-				Message: err.Error(),
-			}, nil
-		}
-		return &api.Response{
-			Code:    int32(codes.OK),
-			Message: codes.OK.String(),
-			Payload: response,
-		}, nil
-	}
-	for _, v := range s.endpoints {
-		if ok := slices.ContainsFunc(v.sd.Methods, func(e grpc.MethodDesc) bool {
-			return req.Method == e.MethodName
-		}); !ok {
-			continue
-		}
-		method := path.Join("/", v.sd.ServiceName, req.Method)
-		reply, err := v.RoundTrip(ctx, &api.Request{Method: method, Payload: req.Payload})
-		slog.Info("RoundTrip", "reply", reply, "err", err)
-		if err != nil {
-			return &api.Response{
-				Code:    int32(codes.Unavailable),
-				Message: err.Error(),
-			}, nil
-		}
-		return &api.Response{
-			Code:    reply.Code,
-			Message: reply.Message,
-			Payload: reply.Payload,
-		}, nil
-	}
-
-	return &api.Response{
-		Code:    int32(codes.Unimplemented),
-		Message: codes.Unimplemented.String(),
-	}, nil
-}
-
-func (s *Server) HelloEcho(ctx context.Context, req *kubeapi.HelloRequest) (*kubeapi.HelloResponse, error) {
-	slog.Info("echo", "hello", req)
-	return &kubeapi.HelloResponse{Message: req.Message}, nil
 }
 
 // RegisterService registers a service and its implementation to the gRPC
