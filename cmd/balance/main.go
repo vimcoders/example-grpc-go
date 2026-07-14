@@ -11,7 +11,7 @@ import (
 
 func main() {
 	server := balance.NewServer()
-	if err := server.RegisterService(&kubeapi.KubeService_ServiceDesc, "kube:50051"); err != nil {
+	if err := server.RegisterService(&kubeapi.ChatService_ServiceDesc, "chat:50051"); err != nil {
 		panic(err)
 	}
 	server.ListenAndServe(context.Background(), ":26888")

@@ -88,7 +88,7 @@ func (ch *channel) Send(p []byte) error {
 
 func BenchmarkHello(b *testing.B) {
 	ch := newChannel()
-	req := kubeapi.Request{Method: path.Base(kubeapi.HelloService_HelloEcho_FullMethodName)}
+	req := kubeapi.Request{Method: path.Base(kubeapi.HelloService_Hello_FullMethodName)}
 	s, err := proto.Marshal(&req)
 	if err != nil {
 		panic(err)
@@ -106,7 +106,7 @@ func BenchmarkHello(b *testing.B) {
 
 func BenchmarkKube(b *testing.B) {
 	ch := newChannel()
-	req := kubeapi.Request{Method: path.Base(kubeapi.KubeService_KubeEcho_FullMethodName)}
+	req := kubeapi.Request{Method: path.Base(kubeapi.ChatService_Chat_FullMethodName)}
 	s, err := proto.Marshal(&req)
 	if err != nil {
 		panic(err)

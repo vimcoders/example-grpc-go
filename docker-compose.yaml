@@ -18,11 +18,11 @@ services:
         condition: service_healthy  # 等待 nats 健康后再启动
     ports:
       - "26888:26888"
-  kube:
+  chat:
     build:
-      dockerfile: cmd/kube/Dockerfile
-    image: ${REGISTRY_URL}/kube:${IMAGE_ID}
-    container_name: kube  # 自定义容器名称
+      dockerfile: cmd/chat/Dockerfile
+    image: ${REGISTRY_URL}/chat:${IMAGE_ID}
+    container_name: chat  # 自定义容器名称
     restart: always
     networks:
       - kube  # 加入私有网络

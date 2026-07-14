@@ -42,13 +42,13 @@ go test -bench=. -v ./...
 │   │   ├── roundtrip.go  # 后端端点封装
 │   │   ├── channel.go    # 帧协议编解码
 │   │   └── codec.go      # Protobuf 编解码器
-│   └── kube/
+│   └── chat/
 │       └── handler.go    # 业务逻辑处理器
 ├── cmd/
 │   ├── balance/          # 网关入口
 │   │   ├── main.go
 │   │   └── Dockerfile
-│   └── kube/             # 微服务入口
+│   └── chat/             # 微服务入口
 │       ├── main.go
 │       └── Dockerfile
 ├── generated/
@@ -67,17 +67,17 @@ go test -bench=. -v ./...
 
 ```go
 server := balance.NewServer()
-server.RegisterService(&kubeapi.KubeService_ServiceDesc, "kube:50051")
+server.RegisterService(&kubeapi.ChatService_ServiceDesc, "chat:50051")
 server.ListenAndServe(ctx, ":26888")
 ```
 
-### kube（微服务）
+### chat（微服务）
 
 标准 grpcx 服务：
 
 ```go
 server := grpcx.NewServer()
-server.RegisterService(&kubeapi.KubeService_ServiceDesc, &kube.Handler{})
+server.RegisterService(&kubeapi.ChatService_ServiceDesc, &chat.Handler{})
 server.ListenAndServe(ctx, ":50051")
 ```
 
