@@ -1,7 +1,7 @@
 package balance
 
 import (
-	"fmt"
+	"encoding/json"
 
 	"google.golang.org/protobuf/proto"
 )
@@ -20,7 +20,7 @@ func (c codec) Marshal(msg any) ([]byte, error) {
 	case proto.Message:
 		return proto.Marshal(v)
 	default:
-		return nil, fmt.Errorf("ttrpc: cannot marshal unknown type: %T", msg)
+		return json.Marshal(msg)
 	}
 }
 
@@ -30,6 +30,6 @@ func (c codec) Unmarshal(p []byte, msg any) error {
 	case proto.Message:
 		return proto.Unmarshal(p, v)
 	default:
-		return fmt.Errorf("ttrpc: cannot unmarshal into unknown type: %T", msg)
+		return json.Unmarshal(p, v)
 	}
 }
