@@ -1,6 +1,6 @@
 # example-grpc-go
 
-使用 [grpcx](https://github.com/vimcoders/grpcx) 构建 **微服务网关路由** 的示例项目。
+使用 [grpcx](https://github.com/vimcoders/grpcx) 构建 **微服务网关路由** 的示例项目,同时支持TCP/TLS和 HTTP/HTTPS 等多种接入方式。
 
 ### 环境要求
 
