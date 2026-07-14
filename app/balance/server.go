@@ -105,12 +105,7 @@ func (x *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
-	reply, err := x.Codec.Marshal(response)
-	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
-	}
-	_, _ = w.Write(reply)
+	_, _ = w.Write(response.Payload)
 }
 
 // RegisterService registers a service and its implementation to the gRPC
