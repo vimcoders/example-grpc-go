@@ -21,14 +21,17 @@ docker compose up -d
 ```
 
 启动的服务：
-- `balance` 网关，端口 `:26888`
-- `kube` 微服务，端口 `:50051`
+- `balance` 网关，tcp端口 `:26888`,http端口 `:36888`
+- `chat` 微服务，端口 `:50051`
 - `mysql`、`redis`、`nats` 基础设施
 
 ### 3. 压测
 
 ```bash
-go test -bench=. -v ./...
+go test -bench "^BenchmarkTCPHello$" -cpu="1" -benchtime=1s -benchmem -count=1
+go test -bench "^BenchmarkTCPChat$" -cpu="1" -benchtime=1s -benchmem -count=1
+go test -bench "^BenchmarkHTTPHello$" -cpu="1" -benchtime=1s -benchmem -count=1
+go test -bench "^BenchmarkHTTPChat$" -cpu="1" -benchtime=1s -benchmem -count=1
 ```
 
 ## 项目结构
