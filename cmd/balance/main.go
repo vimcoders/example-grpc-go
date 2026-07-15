@@ -27,6 +27,12 @@ func main() {
 	if err := server.RegisterService(&kubeapi.ActivityService_ServiceDesc, "activity:50054"); err != nil {
 		panic(err)
 	}
+	if err := server.RegisterService(&kubeapi.ItemService_ServiceDesc, "item:50055"); err != nil {
+		panic(err)
+	}
+	if err := server.RegisterService(&kubeapi.MailService_ServiceDesc, "mail:50056"); err != nil {
+		panic(err)
+	}
 	go func() {
 		_ = server.ListenAndServe(ctx, ":26888")
 	}()

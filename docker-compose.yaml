@@ -87,6 +87,40 @@ services:
         condition: service_healthy  # 等待 mysql 健康后再启动
       nats:
         condition: service_healthy  # 等待 nats 健康后再启动
+  item:
+    build:
+      dockerfile: cmd/item/Dockerfile
+    image: ${REGISTRY_URL}/item:${IMAGE_ID}
+    container_name: item  # 自定义容器名称
+    restart: always
+    networks:
+      - kube  # 加入私有网络
+    environment:
+      MYSQL: ${MYSQL_DSN}
+    depends_on:
+      redis:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      mysql:
+        condition: service_healthy  # 等待 mysql 健康后再启动
+      nats:
+        condition: service_healthy  # 等待 nats 健康后再启动
+  mail:
+    build:
+      dockerfile: cmd/mail/Dockerfile
+    image: ${REGISTRY_URL}/mail:${IMAGE_ID}
+    container_name: mail  # 自定义容器名称
+    restart: always
+    networks:
+      - kube  # 加入私有网络
+    environment:
+      MYSQL: ${MYSQL_DSN}
+    depends_on:
+      redis:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      mysql:
+        condition: service_healthy  # 等待 mysql 健康后再启动
+      nats:
+        condition: service_healthy  # 等待 nats 健康后再启动
   mysql:
     image: mysql:latest
     restart: always

@@ -74,6 +74,8 @@ server.RegisterService(&kubeapi.ChatService_ServiceDesc, "chat:50051")
 server.RegisterService(&kubeapi.SocialService_ServiceDesc, "social:50052")
 server.RegisterService(&kubeapi.ProxyService_ServiceDesc, "proxy:50053")
 server.RegisterService(&kubeapi.ActivityService_ServiceDesc, "activity:50054")
+server.RegisterService(&kubeapi.ItemService_ServiceDesc, "item:50055")
+server.RegisterService(&kubeapi.MailService_ServiceDesc, "mail:50056")
 server.ListenAndServe(ctx, ":26888")
 ```
 

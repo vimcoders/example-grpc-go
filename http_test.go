@@ -92,3 +92,37 @@ func BenchmarkHTTPGetActivity(b *testing.B) {
 		}
 	}
 }
+
+func BenchmarkHTTPGetMail(b *testing.B) {
+	codec := balance.GetCodec("proto")
+	req, err := codec.Marshal(&kubeapi.GetMailRequest{})
+	if err != nil {
+		b.Error(err)
+		return
+	}
+	client := http.Client{Timeout: time.Second}
+	b.ResetTimer()
+	for b.Loop() {
+		_, err := client.Post("http://127.0.0.1:36888"+kubeapi.MailService_GetMail_FullMethodName, "application/x-protobuf", bytes.NewBuffer(req))
+		if err != nil {
+			b.Error(err)
+		}
+	}
+}
+
+func BenchmarkHTTPDownload(b *testing.B) {
+	codec := balance.GetCodec("proto")
+	req, err := codec.Marshal(&kubeapi.DownloadRequest{})
+	if err != nil {
+		b.Error(err)
+		return
+	}
+	client := http.Client{Timeout: time.Second}
+	b.ResetTimer()
+	for b.Loop() {
+		_, err := client.Post("http://127.0.0.1:36888"+kubeapi.ItemService_Download_FullMethodName, "application/x-protobuf", bytes.NewBuffer(req))
+		if err != nil {
+			b.Error(err)
+		}
+	}
+}

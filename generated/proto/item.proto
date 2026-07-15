@@ -1,0 +1,11 @@
+syntax = "proto3";
+package kubeapi;
+option go_package = "./;kubeapi";
+
+message DownloadRequest {}
+
+message DownloadResponse {}
+
+service ItemService {
+  rpc Download(DownloadRequest) returns (DownloadResponse);
+}

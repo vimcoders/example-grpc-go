@@ -191,3 +191,45 @@ func BenchmarkTCPGetActivity(b *testing.B) {
 		}
 	}
 }
+
+func BenchmarkTCPGetMail(b *testing.B) {
+	ch := newChannel()
+	req := kubeapi.Request{
+		Method:  path.Base(kubeapi.MailService_GetMail_FullMethodName),
+		Timeout: int64(time.Second),
+	}
+	s, err := proto.Marshal(&req)
+	if err != nil {
+		panic(err)
+	}
+	b.ResetTimer()
+	for b.Loop() {
+		if err := ch.Send(s); err != nil {
+			continue
+		}
+		if _, err := ch.Recv(); err != nil {
+			continue
+		}
+	}
+}
+
+func BenchmarkTCPDownload(b *testing.B) {
+	ch := newChannel()
+	req := kubeapi.Request{
+		Method:  path.Base(kubeapi.ItemService_Download_FullMethodName),
+		Timeout: int64(time.Second),
+	}
+	s, err := proto.Marshal(&req)
+	if err != nil {
+		panic(err)
+	}
+	b.ResetTimer()
+	for b.Loop() {
+		if err := ch.Send(s); err != nil {
+			continue
+		}
+		if _, err := ch.Recv(); err != nil {
+			continue
+		}
+	}
+}
