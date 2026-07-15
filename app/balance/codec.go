@@ -2,6 +2,7 @@ package balance
 
 import (
 	"encoding/json"
+	"errors"
 
 	"google.golang.org/grpc/encoding"
 	"google.golang.org/protobuf/proto"
@@ -23,7 +24,7 @@ func (c codec) Marshal(msg any) ([]byte, error) {
 	case proto.Message:
 		return proto.Marshal(v)
 	default:
-		return json.Marshal(msg)
+		return nil, errors.New("protoc not supported")
 	}
 }
 
@@ -33,10 +34,35 @@ func (c codec) Unmarshal(p []byte, msg any) error {
 	case proto.Message:
 		return proto.Unmarshal(p, v)
 	default:
-		return json.Unmarshal(p, v)
+		return errors.New("protoc not supported")
 	}
 }
 
-func GetCodec(_ string) encoding.Codec {
-	return &codec{}
+func GetCodec(codecName string) encoding.Codec {
+	j, p := jsonc{}, codec{}
+	switch codecName {
+	case j.Name():
+		return &j
+	case p.Name():
+		return &p
+	}
+
+	return &p
+}
+
+type jsonc struct{}
+
+// Name implements [encoding.Codec].
+func (c *jsonc) Name() string {
+	return "json"
+}
+
+// Marshal implements [encoding.Codec].
+func (c jsonc) Marshal(v any) ([]byte, error) {
+	return json.Marshal(v)
+}
+
+// Unmarshal implements [encoding.Codec].
+func (c jsonc) Unmarshal(p []byte, v any) error {
+	return json.Unmarshal(p, v)
 }
