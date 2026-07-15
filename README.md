@@ -66,11 +66,14 @@ go test -bench "^BenchmarkHTTPChat$" -cpu="1" -benchtime=1s -benchmem -count=1
 
 ### balance（网关）
 
-注册路由监听 `:26888`，通过 grpcx 转发到后端服务：
+注册多个微服务路由监听 `:26888`端口，通过 grpcx 转发到后端服务：
 
 ```go
 server := balance.NewServer()
 server.RegisterService(&kubeapi.ChatService_ServiceDesc, "chat:50051")
+server.RegisterService(&kubeapi.SocialService_ServiceDesc, "social:50052")
+server.RegisterService(&kubeapi.ProxyService_ServiceDesc, "proxy:50053")
+server.RegisterService(&kubeapi.ActivityService_ServiceDesc, "activity:50054")
 server.ListenAndServe(ctx, ":26888")
 ```
 
