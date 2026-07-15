@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"path"
 	"sync"
+	"time"
 
 	"github.com/vimcoders/grpcx"
 	"google.golang.org/grpc"
@@ -108,6 +109,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	response, err := session.RoundTrip(context.Background(), &kubeapi.Request{
 		Method:  path.Base(r.URL.Path),
 		Payload: b,
+		Timeout: int64(time.Second),
 	})
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)

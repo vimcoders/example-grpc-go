@@ -9,6 +9,7 @@ import (
 	"net"
 	"path"
 	"testing"
+	"time"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -88,7 +89,10 @@ func (ch *channel) Send(p []byte) error {
 
 func BenchmarkTCPHello(b *testing.B) {
 	ch := newChannel()
-	req := kubeapi.Request{Method: path.Base(kubeapi.HelloService_Hello_FullMethodName)}
+	req := kubeapi.Request{
+		Method:  path.Base(kubeapi.HelloService_Hello_FullMethodName),
+		Timeout: int64(time.Second),
+	}
 	s, err := proto.Marshal(&req)
 	if err != nil {
 		panic(err)
@@ -106,7 +110,10 @@ func BenchmarkTCPHello(b *testing.B) {
 
 func BenchmarkTCPChat(b *testing.B) {
 	ch := newChannel()
-	req := kubeapi.Request{Method: path.Base(kubeapi.ChatService_Chat_FullMethodName)}
+	req := kubeapi.Request{
+		Method:  path.Base(kubeapi.ChatService_Chat_FullMethodName),
+		Timeout: int64(time.Second),
+	}
 	s, err := proto.Marshal(&req)
 	if err != nil {
 		panic(err)
