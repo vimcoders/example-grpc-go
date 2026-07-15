@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        v7.35.1
-// source: proto/hello.proto
+// source: proto/balance.proto
 
 package kubeapi
 
@@ -30,7 +30,7 @@ type HelloRequest struct {
 
 func (x *HelloRequest) Reset() {
 	*x = HelloRequest{}
-	mi := &file_proto_hello_proto_msgTypes[0]
+	mi := &file_proto_balance_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -42,7 +42,7 @@ func (x *HelloRequest) String() string {
 func (*HelloRequest) ProtoMessage() {}
 
 func (x *HelloRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_hello_proto_msgTypes[0]
+	mi := &file_proto_balance_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -55,7 +55,7 @@ func (x *HelloRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HelloRequest.ProtoReflect.Descriptor instead.
 func (*HelloRequest) Descriptor() ([]byte, []int) {
-	return file_proto_hello_proto_rawDescGZIP(), []int{0}
+	return file_proto_balance_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *HelloRequest) GetMessage() string {
@@ -74,7 +74,7 @@ type HelloResponse struct {
 
 func (x *HelloResponse) Reset() {
 	*x = HelloResponse{}
-	mi := &file_proto_hello_proto_msgTypes[1]
+	mi := &file_proto_balance_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -86,7 +86,7 @@ func (x *HelloResponse) String() string {
 func (*HelloResponse) ProtoMessage() {}
 
 func (x *HelloResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_hello_proto_msgTypes[1]
+	mi := &file_proto_balance_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -99,7 +99,7 @@ func (x *HelloResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HelloResponse.ProtoReflect.Descriptor instead.
 func (*HelloResponse) Descriptor() ([]byte, []int) {
-	return file_proto_hello_proto_rawDescGZIP(), []int{1}
+	return file_proto_balance_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *HelloResponse) GetMessage() string {
@@ -109,39 +109,39 @@ func (x *HelloResponse) GetMessage() string {
 	return ""
 }
 
-var File_proto_hello_proto protoreflect.FileDescriptor
+var File_proto_balance_proto protoreflect.FileDescriptor
 
-const file_proto_hello_proto_rawDesc = "" +
+const file_proto_balance_proto_rawDesc = "" +
 	"\n" +
-	"\x11proto/hello.proto\x12\akubeapi\"(\n" +
+	"\x13proto/balance.proto\x12\akubeapi\"(\n" +
 	"\fHelloRequest\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage\")\n" +
 	"\rHelloResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage2F\n" +
-	"\fHelloService\x126\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage2H\n" +
+	"\x0eBalanceService\x126\n" +
 	"\x05Hello\x12\x15.kubeapi.HelloRequest\x1a\x16.kubeapi.HelloResponseB\fZ\n" +
 	"./;kubeapib\x06proto3"
 
 var (
-	file_proto_hello_proto_rawDescOnce sync.Once
-	file_proto_hello_proto_rawDescData []byte
+	file_proto_balance_proto_rawDescOnce sync.Once
+	file_proto_balance_proto_rawDescData []byte
 )
 
-func file_proto_hello_proto_rawDescGZIP() []byte {
-	file_proto_hello_proto_rawDescOnce.Do(func() {
-		file_proto_hello_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_hello_proto_rawDesc), len(file_proto_hello_proto_rawDesc)))
+func file_proto_balance_proto_rawDescGZIP() []byte {
+	file_proto_balance_proto_rawDescOnce.Do(func() {
+		file_proto_balance_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_balance_proto_rawDesc), len(file_proto_balance_proto_rawDesc)))
 	})
-	return file_proto_hello_proto_rawDescData
+	return file_proto_balance_proto_rawDescData
 }
 
-var file_proto_hello_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_proto_hello_proto_goTypes = []any{
+var file_proto_balance_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_proto_balance_proto_goTypes = []any{
 	(*HelloRequest)(nil),  // 0: kubeapi.HelloRequest
 	(*HelloResponse)(nil), // 1: kubeapi.HelloResponse
 }
-var file_proto_hello_proto_depIdxs = []int32{
-	0, // 0: kubeapi.HelloService.Hello:input_type -> kubeapi.HelloRequest
-	1, // 1: kubeapi.HelloService.Hello:output_type -> kubeapi.HelloResponse
+var file_proto_balance_proto_depIdxs = []int32{
+	0, // 0: kubeapi.BalanceService.Hello:input_type -> kubeapi.HelloRequest
+	1, // 1: kubeapi.BalanceService.Hello:output_type -> kubeapi.HelloResponse
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -149,26 +149,26 @@ var file_proto_hello_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_proto_hello_proto_init() }
-func file_proto_hello_proto_init() {
-	if File_proto_hello_proto != nil {
+func init() { file_proto_balance_proto_init() }
+func file_proto_balance_proto_init() {
+	if File_proto_balance_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_hello_proto_rawDesc), len(file_proto_hello_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_balance_proto_rawDesc), len(file_proto_balance_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_proto_hello_proto_goTypes,
-		DependencyIndexes: file_proto_hello_proto_depIdxs,
-		MessageInfos:      file_proto_hello_proto_msgTypes,
+		GoTypes:           file_proto_balance_proto_goTypes,
+		DependencyIndexes: file_proto_balance_proto_depIdxs,
+		MessageInfos:      file_proto_balance_proto_msgTypes,
 	}.Build()
-	File_proto_hello_proto = out.File
-	file_proto_hello_proto_goTypes = nil
-	file_proto_hello_proto_depIdxs = nil
+	File_proto_balance_proto = out.File
+	file_proto_balance_proto_goTypes = nil
+	file_proto_balance_proto_depIdxs = nil
 }

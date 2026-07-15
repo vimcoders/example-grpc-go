@@ -1,0 +1,9 @@
+syntax = "proto3";
+package kubeapi;
+option go_package = "./;kubeapi";
+
+message LoginRequest {}
+
+message LoginResponse {}
+
+service ProxyService { rpc Login(LoginRequest) returns (LoginResponse); }

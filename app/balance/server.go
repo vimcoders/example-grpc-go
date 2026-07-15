@@ -30,7 +30,7 @@ type Server struct {
 func NewServer(opt ...Option) *Server {
 	var s = Server{
 		Codec: GetCodec("proto"),
-		desc:  &kubeapi.HelloService_ServiceDesc,
+		desc:  &kubeapi.BalanceService_ServiceDesc,
 	}
 	for i := range opt {
 		opt[i](&s)

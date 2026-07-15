@@ -17,7 +17,7 @@ import (
 )
 
 type Session struct {
-	kubeapi.HelloServiceServer
+	kubeapi.BalanceServiceServer
 	encoding.Codec
 	desc        *grpc.ServiceDesc
 	interceptor grpc.UnaryServerInterceptor

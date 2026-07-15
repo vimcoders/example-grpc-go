@@ -1,0 +1,11 @@
+syntax = "proto3";
+package kubeapi;
+option go_package = "./;kubeapi";
+
+message GetActivityRequest {}
+
+message GetActivityResponse {}
+
+service ActivityService {
+  rpc GetActivity(GetActivityRequest) returns (GetActivityResponse);
+}

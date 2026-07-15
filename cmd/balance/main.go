@@ -18,6 +18,15 @@ func main() {
 	if err := server.RegisterService(&kubeapi.ChatService_ServiceDesc, "chat:50051"); err != nil {
 		panic(err)
 	}
+	if err := server.RegisterService(&kubeapi.SocialService_ServiceDesc, "social:50052"); err != nil {
+		panic(err)
+	}
+	if err := server.RegisterService(&kubeapi.ProxyService_ServiceDesc, "proxy:50053"); err != nil {
+		panic(err)
+	}
+	if err := server.RegisterService(&kubeapi.ActivityService_ServiceDesc, "activity:50054"); err != nil {
+		panic(err)
+	}
 	go func() {
 		_ = server.ListenAndServe(ctx, ":26888")
 	}()

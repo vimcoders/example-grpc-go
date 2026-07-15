@@ -27,7 +27,7 @@ spec:
         - containerPort: 50051
         env: 
         - name: TOKEN
-          value: "vUZvdEy9+KpVxQRLFMHSVPm6hbnSOhz87BuXJhyPPuZyPwAOwbLsRjYNHSluIBb2"
+          value: "vUZvdEy9+"
         - name: HOST_IP
           valueFrom:
             fieldRef:

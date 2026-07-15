@@ -1,0 +1,11 @@
+syntax = "proto3";
+package kubeapi;
+option go_package = "./;kubeapi";
+
+message GetFriendsRequest {}
+
+message GetFriendsResponse {}
+
+service SocialService {
+  rpc GetFriends(GetFriendsRequest) returns (GetFriendsResponse);
+}

@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: balance
+  name: social
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: balance
+      app: social
   template:    
     metadata:
       labels:
-        app: balance
+        app: social
     spec:
       containers:
-      - name: balance
-        image: registry.cn-hangzhou.aliyuncs.com/kube/balance:2026-05-10-d69c7c0
+      - name: social
+        image: registry.cn-hangzhou.aliyuncs.com/kube/social:2026-05-10-d69c7c0
         imagePullPolicy: Always
         resources:
           requests:
@@ -24,8 +24,7 @@ spec:
             cpu: "500m"     
             memory: "512Mi" 
         ports:
-        - containerPort: 26888
-        - containerPort: 36888
+        - containerPort: 50051
         env: 
         - name: TOKEN
           value: "vUZvdEy9+"
@@ -39,3 +38,16 @@ spec:
               fieldPath: status.podIP
       imagePullSecrets:
       - name: aliyun-registry-secret
+---
+# 自动创建的 Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: social
+spec:
+  selector:
+    app: social
+  ports:
+  - port: 50052
+    targetPort: 50052
+  type: ClusterIP
