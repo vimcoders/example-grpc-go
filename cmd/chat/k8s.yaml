@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat
+  template:    
+    metadata:
+      labels:
+        app: chat
+    spec:
+      containers:
+      - name: chat
+        image: registry.cn-hangzhou.aliyuncs.com/kube/chat:2026-05-10-d69c7c0
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "100m"     
+            memory: "16Mi"  
+          limits:
+            cpu: "500m"     
+            memory: "512Mi" 
+        ports:
+        - containerPort: 50051
+        env: 
+        - name: TOKEN
+          value: "vUZvdEy9+KpVxQRLFMHSVPm6hbnSOhz87BuXJhyPPuZyPwAOwbLsRjYNHSluIBb2"
+        - name: HOST_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+      imagePullSecrets:
+      - name: aliyun-registry-secret
+---
+# 自动创建的 Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat
+spec:
+  selector:
+    app: chat
+  ports:
+  - port: 50051
+    targetPort: 50051
+  type: ClusterIP

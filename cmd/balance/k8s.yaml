@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: balance
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: balance
+  template:    
+    metadata:
+      labels:
+        app: balance
+    spec:
+      containers:
+      - name: balance
+        image: registry.cn-hangzhou.aliyuncs.com/kube/balance:2026-05-10-d69c7c0
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "100m"     
+            memory: "16Mi"  
+          limits:
+            cpu: "500m"     
+            memory: "512Mi" 
+        ports:
+        - containerPort: 26888
+        - containerPort: 36888
+        env: 
+        - name: TOKEN
+          value: "vUZvdEy9+KpVxQRLFMHSVPm6hbnSOhz87BuXJhyPPuZyPwAOwbLsRjYNHSluIBb2"
+        - name: HOST_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+      imagePullSecrets:
+      - name: aliyun-registry-secret
