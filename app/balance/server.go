@@ -18,12 +18,11 @@ type Option func(*Server)
 
 type Server struct {
 	encoding.Codec
-	desc        *grpc.ServiceDesc
-	wg          sync.WaitGroup
-	listener    net.Listener
-	closed      context.CancelFunc
-	endpoints   []RoundTripper
-	interceptor grpc.UnaryServerInterceptor
+	desc      *grpc.ServiceDesc
+	wg        sync.WaitGroup
+	listener  net.Listener
+	closed    context.CancelFunc
+	endpoints []RoundTripper
 }
 
 func NewServer(opt ...Option) *Server {
@@ -67,7 +66,7 @@ func (s *Server) ListenAndServe(ctx context.Context, addr string, opt ...Option)
 
 // ServeHTTP 实现 http.Handler 接口
 // 作用：提供 Admin 后台的 HTTP 接口服务，接收前端/运营后台的请求，并转发到对应的 Protobuf 方法
-func (x *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// 统一延迟处理：捕获 panic 崩溃 + 确保请求体关闭
 	defer func() {
 		// 捕获 HTTP 处理过程中的 panic，防止整个服务崩溃
@@ -96,8 +95,8 @@ func (x *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	authority := r.Header.Get("Authorization")
 	slog.Debug("ServeHTTP", "path", r.URL.Path, "authority", authority)
 	session := Session{
-		endpoints: x.endpoints,
-		desc:      x.desc,
+		endpoints: s.endpoints,
+		desc:      s.desc,
 		Codec:     &codec{},
 	}
 	response, err := session.RoundTrip(context.Background(), &kubeapi.Request{Method: path.Base(r.URL.Path)})
