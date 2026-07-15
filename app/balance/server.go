@@ -28,7 +28,7 @@ type Server struct {
 
 func NewServer(opt ...Option) *Server {
 	var s = Server{
-		Codec: &codec{},
+		Codec: GetCodec("proto"),
 		desc:  &kubeapi.HelloService_ServiceDesc,
 	}
 	for i := range opt {
@@ -58,7 +58,7 @@ func (s *Server) ListenAndServe(ctx context.Context, addr string, opt ...Option)
 			session := Session{
 				endpoints: s.endpoints,
 				desc:      s.desc,
-				Codec:     &codec{},
+				Codec:     s.Codec,
 			}
 			_ = session.Handle(cancelCtx, conn)
 		})
@@ -103,7 +103,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	session := Session{
 		endpoints: s.endpoints,
 		desc:      s.desc,
-		Codec:     &codec{},
+		Codec:     s.Codec,
 	}
 	response, err := session.RoundTrip(context.Background(), &kubeapi.Request{
 		Method:  path.Base(r.URL.Path),
