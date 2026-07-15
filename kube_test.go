@@ -104,7 +104,7 @@ func BenchmarkHello(b *testing.B) {
 	}
 }
 
-func BenchmarkKube(b *testing.B) {
+func BenchmarkChat(b *testing.B) {
 	ch := newChannel()
 	req := kubeapi.Request{Method: path.Base(kubeapi.ChatService_Chat_FullMethodName)}
 	s, err := proto.Marshal(&req)

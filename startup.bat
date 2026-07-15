@@ -12,6 +12,6 @@ set IMAGE_ID=%BUILD_DATE%-%GIT_COMMIT%
 docker compose up -d --build
 docker system prune -af --filter "until=24h"
 go test -bench "^BenchmarkHello$" -cpu="1" -benchtime=1s -benchmem -count=1
-go test -bench "^BenchmarkKube$" -cpu="1" -benchtime=1s -benchmem -count=1
+go test -bench "^BenchmarkChat$" -cpu="1" -benchtime=1s -benchmem -count=1
 echo ✅ 启动完成！
 pause
