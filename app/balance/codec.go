@@ -38,16 +38,18 @@ func (c codec) Unmarshal(p []byte, msg any) error {
 	}
 }
 
+var defaultJsonc jsonc
+var defaultCodec codec
+
 func GetCodec(codecName string) encoding.Codec {
-	j, p := jsonc{}, codec{}
 	switch codecName {
-	case j.Name():
-		return &j
-	case p.Name():
-		return &p
+	case defaultJsonc.Name():
+		return &defaultJsonc
+	case defaultCodec.Name():
+		return &defaultCodec
 	}
 
-	return &p
+	return &defaultCodec
 }
 
 type jsonc struct{}
