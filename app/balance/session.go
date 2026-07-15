@@ -24,7 +24,7 @@ type Session struct {
 	endpoints   []RoundTripper
 }
 
-func (s *Session) HelloEcho(ctx context.Context, req *kubeapi.HelloRequest) (*kubeapi.HelloResponse, error) {
+func (s *Session) Hello(ctx context.Context, req *kubeapi.HelloRequest) (*kubeapi.HelloResponse, error) {
 	slog.Info("echo", "hello", req)
 	return &kubeapi.HelloResponse{Message: req.Message}, nil
 }
@@ -75,8 +75,7 @@ func (s *Session) RoundTrip(ctx context.Context, req *kubeapi.Request) (*kubeapi
 			continue
 		}
 		method := path.Join("/", v.sd.ServiceName, req.Method)
-		reply, err := v.RoundTrip(ctx, &api.Request{Method: method, Payload: req.Payload})
-		slog.Info("RoundTrip", "reply", reply, "err", err)
+		reply, err := v.RoundTrip(ctx, &api.Request{Method: method, Payload: req.Payload, Timeout: req.Timeout})
 		if err != nil {
 			return &kubeapi.Response{
 				Code:    int32(codes.Unavailable),

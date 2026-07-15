@@ -7,7 +7,7 @@ import (
 )
 
 type Handler struct {
-	kubeapi.UnimplementedChatServiceServer
+	kubeapi.ChatServiceServer
 }
 
 func (h *Handler) Chat(ctx context.Context, req *kubeapi.ChatRequest) (*kubeapi.ChatResponse, error) {

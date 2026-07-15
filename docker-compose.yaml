@@ -18,6 +18,7 @@ services:
         condition: service_healthy  # 等待 nats 健康后再启动
     ports:
       - "26888:26888"
+      - "36888:36888"
   chat:
     build:
       dockerfile: cmd/chat/Dockerfile
@@ -37,7 +38,6 @@ services:
         condition: service_healthy  # 等待 nats 健康后再启动
   mysql:
     image: mysql:latest
-    container_name: kube-mysql  # 自定义容器名称
     restart: always
     networks:
       - kube  # 加入私有网络

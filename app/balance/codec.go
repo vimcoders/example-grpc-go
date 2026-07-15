@@ -3,8 +3,11 @@ package balance
 import (
 	"encoding/json"
 
+	"google.golang.org/grpc/encoding"
 	"google.golang.org/protobuf/proto"
 )
+
+type Codec encoding.Codec
 
 // GetCodec returns a new instance of the proto codec.
 type codec struct{}
@@ -32,4 +35,8 @@ func (c codec) Unmarshal(p []byte, msg any) error {
 	default:
 		return json.Unmarshal(p, v)
 	}
+}
+
+func GetCodec(_ string) encoding.Codec {
+	return &codec{}
 }

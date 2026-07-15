@@ -3,6 +3,7 @@ package balance
 import (
 	"context"
 	"example/generated/kubeapi"
+	"io"
 	"log/slog"
 	"net"
 	"net/http"
@@ -85,21 +86,29 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Expose-Headers", "*")
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	// 设置响应内容类型为 JSON
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/x-protobuf")
 	// 如果是 OPTIONS 预检请求，直接返回 204，不处理业务
 	if r.Method != http.MethodPost {
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 		return
 	}
+	b, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusMethodNotAllowed)
+		return
+	}
 	// 从请求头获取身份令牌（前端登录后的 token）
-	authority := r.Header.Get("Authorization")
-	slog.Debug("ServeHTTP", "path", r.URL.Path, "authority", authority)
+	// authority := r.Header.Get("Authorization")
+
 	session := Session{
 		endpoints: s.endpoints,
 		desc:      s.desc,
 		Codec:     &codec{},
 	}
-	response, err := session.RoundTrip(context.Background(), &kubeapi.Request{Method: path.Base(r.URL.Path)})
+	response, err := session.RoundTrip(context.Background(), &kubeapi.Request{
+		Method:  path.Base(r.URL.Path),
+		Payload: b,
+	})
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
