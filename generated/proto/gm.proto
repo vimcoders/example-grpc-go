@@ -1,0 +1,11 @@
+syntax = "proto3";
+package kubeapi;
+option go_package = "./;kubeapi";
+
+message SendCommandRequest {}
+
+message SendCommandResponse {}
+
+service GMService {
+  rpc SendCommand(SendCommandRequest) returns (SendCommandResponse);
+}
