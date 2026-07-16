@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        v7.35.1
-// source: proto/mail.proto
+// source: mail.proto
 
 package kubeapi
 
@@ -29,7 +29,7 @@ type GetMailRequest struct {
 
 func (x *GetMailRequest) Reset() {
 	*x = GetMailRequest{}
-	mi := &file_proto_mail_proto_msgTypes[0]
+	mi := &file_mail_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -41,7 +41,7 @@ func (x *GetMailRequest) String() string {
 func (*GetMailRequest) ProtoMessage() {}
 
 func (x *GetMailRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_mail_proto_msgTypes[0]
+	mi := &file_mail_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -54,7 +54,7 @@ func (x *GetMailRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetMailRequest.ProtoReflect.Descriptor instead.
 func (*GetMailRequest) Descriptor() ([]byte, []int) {
-	return file_proto_mail_proto_rawDescGZIP(), []int{0}
+	return file_mail_proto_rawDescGZIP(), []int{0}
 }
 
 type GetMailResponse struct {
@@ -65,7 +65,7 @@ type GetMailResponse struct {
 
 func (x *GetMailResponse) Reset() {
 	*x = GetMailResponse{}
-	mi := &file_proto_mail_proto_msgTypes[1]
+	mi := &file_mail_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -77,7 +77,7 @@ func (x *GetMailResponse) String() string {
 func (*GetMailResponse) ProtoMessage() {}
 
 func (x *GetMailResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_mail_proto_msgTypes[1]
+	mi := &file_mail_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -90,14 +90,15 @@ func (x *GetMailResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetMailResponse.ProtoReflect.Descriptor instead.
 func (*GetMailResponse) Descriptor() ([]byte, []int) {
-	return file_proto_mail_proto_rawDescGZIP(), []int{1}
+	return file_mail_proto_rawDescGZIP(), []int{1}
 }
 
-var File_proto_mail_proto protoreflect.FileDescriptor
+var File_mail_proto protoreflect.FileDescriptor
 
-const file_proto_mail_proto_rawDesc = "" +
+const file_mail_proto_rawDesc = "" +
 	"\n" +
-	"\x10proto/mail.proto\x12\akubeapi\"\x10\n" +
+	"\n" +
+	"mail.proto\x12\akubeapi\"\x10\n" +
 	"\x0eGetMailRequest\"\x11\n" +
 	"\x0fGetMailResponse2K\n" +
 	"\vMailService\x12<\n" +
@@ -105,23 +106,23 @@ const file_proto_mail_proto_rawDesc = "" +
 	"./;kubeapib\x06proto3"
 
 var (
-	file_proto_mail_proto_rawDescOnce sync.Once
-	file_proto_mail_proto_rawDescData []byte
+	file_mail_proto_rawDescOnce sync.Once
+	file_mail_proto_rawDescData []byte
 )
 
-func file_proto_mail_proto_rawDescGZIP() []byte {
-	file_proto_mail_proto_rawDescOnce.Do(func() {
-		file_proto_mail_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_mail_proto_rawDesc), len(file_proto_mail_proto_rawDesc)))
+func file_mail_proto_rawDescGZIP() []byte {
+	file_mail_proto_rawDescOnce.Do(func() {
+		file_mail_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_mail_proto_rawDesc), len(file_mail_proto_rawDesc)))
 	})
-	return file_proto_mail_proto_rawDescData
+	return file_mail_proto_rawDescData
 }
 
-var file_proto_mail_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_proto_mail_proto_goTypes = []any{
+var file_mail_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_mail_proto_goTypes = []any{
 	(*GetMailRequest)(nil),  // 0: kubeapi.GetMailRequest
 	(*GetMailResponse)(nil), // 1: kubeapi.GetMailResponse
 }
-var file_proto_mail_proto_depIdxs = []int32{
+var file_mail_proto_depIdxs = []int32{
 	0, // 0: kubeapi.MailService.GetMail:input_type -> kubeapi.GetMailRequest
 	1, // 1: kubeapi.MailService.GetMail:output_type -> kubeapi.GetMailResponse
 	1, // [1:2] is the sub-list for method output_type
@@ -131,26 +132,26 @@ var file_proto_mail_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_proto_mail_proto_init() }
-func file_proto_mail_proto_init() {
-	if File_proto_mail_proto != nil {
+func init() { file_mail_proto_init() }
+func file_mail_proto_init() {
+	if File_mail_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_mail_proto_rawDesc), len(file_proto_mail_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_mail_proto_rawDesc), len(file_mail_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_proto_mail_proto_goTypes,
-		DependencyIndexes: file_proto_mail_proto_depIdxs,
-		MessageInfos:      file_proto_mail_proto_msgTypes,
+		GoTypes:           file_mail_proto_goTypes,
+		DependencyIndexes: file_mail_proto_depIdxs,
+		MessageInfos:      file_mail_proto_msgTypes,
 	}.Build()
-	File_proto_mail_proto = out.File
-	file_proto_mail_proto_goTypes = nil
-	file_proto_mail_proto_depIdxs = nil
+	File_mail_proto = out.File
+	file_mail_proto_goTypes = nil
+	file_mail_proto_depIdxs = nil
 }

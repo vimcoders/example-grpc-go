@@ -10,6 +10,7 @@ for /f "delims=" %%a in ('powershell Get-Date -Format "yyyy-MM-dd"') do set BUIL
 for /f "delims=" %%i in ('git rev-parse --short HEAD') do set GIT_COMMIT=%%i
 set IMAGE_ID=%BUILD_DATE%-%GIT_COMMIT%
 docker compose up -d --build
+docker exec -it redis-1 redis-cli --cluster create redis-1:6379 redis-2:6379 redis-3:6379 redis-4:6379 redis-5:6379 redis-6:6379 --cluster-replicas 1 --cluster-yes
 docker system prune -af --filter "until=24h"
 go test -bench . -cpu="1" -benchtime=1s -benchmem -count=1
 echo ✅ 启动完成！

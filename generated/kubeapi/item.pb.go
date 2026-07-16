@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        v7.35.1
-// source: proto/item.proto
+// source: item.proto
 
 package kubeapi
 
@@ -29,7 +29,7 @@ type DownloadRequest struct {
 
 func (x *DownloadRequest) Reset() {
 	*x = DownloadRequest{}
-	mi := &file_proto_item_proto_msgTypes[0]
+	mi := &file_item_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -41,7 +41,7 @@ func (x *DownloadRequest) String() string {
 func (*DownloadRequest) ProtoMessage() {}
 
 func (x *DownloadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_item_proto_msgTypes[0]
+	mi := &file_item_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -54,7 +54,7 @@ func (x *DownloadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DownloadRequest.ProtoReflect.Descriptor instead.
 func (*DownloadRequest) Descriptor() ([]byte, []int) {
-	return file_proto_item_proto_rawDescGZIP(), []int{0}
+	return file_item_proto_rawDescGZIP(), []int{0}
 }
 
 type DownloadResponse struct {
@@ -65,7 +65,7 @@ type DownloadResponse struct {
 
 func (x *DownloadResponse) Reset() {
 	*x = DownloadResponse{}
-	mi := &file_proto_item_proto_msgTypes[1]
+	mi := &file_item_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -77,7 +77,7 @@ func (x *DownloadResponse) String() string {
 func (*DownloadResponse) ProtoMessage() {}
 
 func (x *DownloadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_item_proto_msgTypes[1]
+	mi := &file_item_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -90,14 +90,15 @@ func (x *DownloadResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DownloadResponse.ProtoReflect.Descriptor instead.
 func (*DownloadResponse) Descriptor() ([]byte, []int) {
-	return file_proto_item_proto_rawDescGZIP(), []int{1}
+	return file_item_proto_rawDescGZIP(), []int{1}
 }
 
-var File_proto_item_proto protoreflect.FileDescriptor
+var File_item_proto protoreflect.FileDescriptor
 
-const file_proto_item_proto_rawDesc = "" +
+const file_item_proto_rawDesc = "" +
 	"\n" +
-	"\x10proto/item.proto\x12\akubeapi\"\x11\n" +
+	"\n" +
+	"item.proto\x12\akubeapi\"\x11\n" +
 	"\x0fDownloadRequest\"\x12\n" +
 	"\x10DownloadResponse2N\n" +
 	"\vItemService\x12?\n" +
@@ -105,23 +106,23 @@ const file_proto_item_proto_rawDesc = "" +
 	"./;kubeapib\x06proto3"
 
 var (
-	file_proto_item_proto_rawDescOnce sync.Once
-	file_proto_item_proto_rawDescData []byte
+	file_item_proto_rawDescOnce sync.Once
+	file_item_proto_rawDescData []byte
 )
 
-func file_proto_item_proto_rawDescGZIP() []byte {
-	file_proto_item_proto_rawDescOnce.Do(func() {
-		file_proto_item_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_item_proto_rawDesc), len(file_proto_item_proto_rawDesc)))
+func file_item_proto_rawDescGZIP() []byte {
+	file_item_proto_rawDescOnce.Do(func() {
+		file_item_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_item_proto_rawDesc), len(file_item_proto_rawDesc)))
 	})
-	return file_proto_item_proto_rawDescData
+	return file_item_proto_rawDescData
 }
 
-var file_proto_item_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_proto_item_proto_goTypes = []any{
+var file_item_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_item_proto_goTypes = []any{
 	(*DownloadRequest)(nil),  // 0: kubeapi.DownloadRequest
 	(*DownloadResponse)(nil), // 1: kubeapi.DownloadResponse
 }
-var file_proto_item_proto_depIdxs = []int32{
+var file_item_proto_depIdxs = []int32{
 	0, // 0: kubeapi.ItemService.Download:input_type -> kubeapi.DownloadRequest
 	1, // 1: kubeapi.ItemService.Download:output_type -> kubeapi.DownloadResponse
 	1, // [1:2] is the sub-list for method output_type
@@ -131,26 +132,26 @@ var file_proto_item_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_proto_item_proto_init() }
-func file_proto_item_proto_init() {
-	if File_proto_item_proto != nil {
+func init() { file_item_proto_init() }
+func file_item_proto_init() {
+	if File_item_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_item_proto_rawDesc), len(file_proto_item_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_item_proto_rawDesc), len(file_item_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_proto_item_proto_goTypes,
-		DependencyIndexes: file_proto_item_proto_depIdxs,
-		MessageInfos:      file_proto_item_proto_msgTypes,
+		GoTypes:           file_item_proto_goTypes,
+		DependencyIndexes: file_item_proto_depIdxs,
+		MessageInfos:      file_item_proto_msgTypes,
 	}.Build()
-	File_proto_item_proto = out.File
-	file_proto_item_proto_goTypes = nil
-	file_proto_item_proto_depIdxs = nil
+	File_item_proto = out.File
+	file_item_proto_goTypes = nil
+	file_item_proto_depIdxs = nil
 }

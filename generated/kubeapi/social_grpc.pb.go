@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.2
 // - protoc             v7.35.1
-// source: proto/social.proto
+// source: social.proto
 
 package kubeapi
 
@@ -117,5 +117,5 @@ var SocialService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/social.proto",
+	Metadata: "social.proto",
 }

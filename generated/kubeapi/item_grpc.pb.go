@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.2
 // - protoc             v7.35.1
-// source: proto/item.proto
+// source: item.proto
 
 package kubeapi
 
@@ -117,5 +117,5 @@ var ItemService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/item.proto",
+	Metadata: "item.proto",
 }

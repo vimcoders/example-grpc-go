@@ -10,7 +10,17 @@ services:
     environment:
       MYSQL: ${MYSQL_DSN}
     depends_on:
-      redis:
+      redis-1:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-2:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-3:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-4:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-5:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-6:
         condition: service_healthy  # 等待 redis 健康后再启动
       mysql:
         condition: service_healthy  # 等待 mysql 健康后再启动
@@ -30,7 +40,17 @@ services:
     environment:
       MYSQL: ${MYSQL_DSN}
     depends_on:
-      redis:
+      redis-1:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-2:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-3:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-4:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-5:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-6:
         condition: service_healthy  # 等待 redis 健康后再启动
       mysql:
         condition: service_healthy  # 等待 mysql 健康后再启动
@@ -47,7 +67,17 @@ services:
     environment:
       MYSQL: ${MYSQL_DSN}
     depends_on:
-      redis:
+      redis-1:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-2:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-3:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-4:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-5:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-6:
         condition: service_healthy  # 等待 redis 健康后再启动
       mysql:
         condition: service_healthy  # 等待 mysql 健康后再启动
@@ -64,7 +94,17 @@ services:
     environment:
       MYSQL: ${MYSQL_DSN}
     depends_on:
-      redis:
+      redis-1:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-2:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-3:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-4:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-5:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-6:
         condition: service_healthy  # 等待 redis 健康后再启动
       mysql:
         condition: service_healthy  # 等待 mysql 健康后再启动
@@ -81,7 +121,17 @@ services:
     environment:
       MYSQL: ${MYSQL_DSN}
     depends_on:
-      redis:
+      redis-1:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-2:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-3:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-4:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-5:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-6:
         condition: service_healthy  # 等待 redis 健康后再启动
       mysql:
         condition: service_healthy  # 等待 mysql 健康后再启动
@@ -98,7 +148,17 @@ services:
     environment:
       MYSQL: ${MYSQL_DSN}
     depends_on:
-      redis:
+      redis-1:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-2:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-3:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-4:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-5:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-6:
         condition: service_healthy  # 等待 redis 健康后再启动
       mysql:
         condition: service_healthy  # 等待 mysql 健康后再启动
@@ -115,7 +175,44 @@ services:
     environment:
       MYSQL: ${MYSQL_DSN}
     depends_on:
-      redis:
+      redis-1:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-2:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-3:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-4:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-5:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-6:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      mysql:
+        condition: service_healthy  # 等待 mysql 健康后再启动
+      nats:
+        condition: service_healthy  # 等待 nats 健康后再启动
+  gm:
+    build:
+      dockerfile: cmd/gm/Dockerfile
+    image: ${REGISTRY_URL}/gm:${IMAGE_ID}
+    container_name: gm  # 自定义容器名称
+    restart: always
+    networks:
+      - kube  # 加入私有网络
+    environment:
+      MYSQL: ${MYSQL_DSN}
+    depends_on:
+      redis-1:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-2:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-3:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-4:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-5:
+        condition: service_healthy  # 等待 redis 健康后再启动
+      redis-6:
         condition: service_healthy  # 等待 redis 健康后再启动
       mysql:
         condition: service_healthy  # 等待 mysql 健康后再启动
@@ -155,11 +252,17 @@ services:
     restart: always
     networks:
       - kube
-  redis:
-    image: redis:latest  # 放弃${IMAGE_ID}，用确定能跑的版本
-    restart: always
+  redis-1:
+    image: redis:latest
+    container_name: redis-1  # 自定义容器名称
     networks:
       - kube
+    command: >
+      redis-server
+        --cluster-enabled yes
+        --cluster-config-file nodes.conf
+        --cluster-node-timeout 5000
+        --appendonly no
     healthcheck:
       # 修复2：健康检查改对（端口6379，用redis-cli更可靠）
       test: ["CMD", "redis-cli", "PING"]  # 不用nc，直接用Redis自带命令
@@ -167,8 +270,96 @@ services:
       timeout: 5s
       retries: 10
       start_period: 15s 
-    ports:
-      - "6379:6379"    # HTTP 端口（Let's Encrypt 验证必需）
+  redis-2:
+    image: redis:latest
+    container_name: redis-2  # 自定义容器名称
+    networks:
+      - kube
+    command: >
+      redis-server
+        --cluster-enabled yes
+        --cluster-config-file nodes.conf
+        --cluster-node-timeout 5000
+        --appendonly no
+    healthcheck:
+      # 修复2：健康检查改对（端口6379，用redis-cli更可靠）
+      test: ["CMD", "redis-cli", "PING"]  # 不用nc，直接用Redis自带命令
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s 
+  redis-3:
+    image: redis:latest
+    container_name: redis-3  # 自定义容器名称
+    networks:
+      - kube
+    command: >
+      redis-server
+        --cluster-enabled yes
+        --cluster-config-file nodes.conf
+        --cluster-node-timeout 5000
+        --appendonly no
+    healthcheck:
+      # 修复2：健康检查改对（端口6379，用redis-cli更可靠）
+      test: ["CMD", "redis-cli", "PING"]  # 不用nc，直接用Redis自带命令
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s 
+  redis-4:
+    image: redis:latest
+    container_name: redis-4  # 自定义容器名称
+    networks:
+      - kube
+    command: >
+      redis-server
+        --cluster-enabled yes
+        --cluster-config-file nodes.conf
+        --cluster-node-timeout 5000
+        --appendonly no
+    healthcheck:
+      # 修复2：健康检查改对（端口6379，用redis-cli更可靠）
+      test: ["CMD", "redis-cli", "PING"]  # 不用nc，直接用Redis自带命令
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s 
+  redis-5:
+    image: redis:latest
+    container_name: redis-5  # 自定义容器名称
+    networks:
+      - kube
+    command: >
+      redis-server
+        --cluster-enabled yes
+        --cluster-config-file nodes.conf
+        --cluster-node-timeout 5000
+        --appendonly no
+    healthcheck:
+      # 修复2：健康检查改对（端口6379，用redis-cli更可靠）
+      test: ["CMD", "redis-cli", "PING"]  # 不用nc，直接用Redis自带命令
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s 
+  redis-6:
+    image: redis:latest
+    container_name: redis-6  # 自定义容器名称
+    networks:
+      - kube
+    command: >
+      redis-server
+        --cluster-enabled yes
+        --cluster-config-file nodes.conf
+        --cluster-node-timeout 5000
+        --appendonly no
+    healthcheck:
+      # 修复2：健康检查改对（端口6379，用redis-cli更可靠）
+      test: ["CMD", "redis-cli", "PING"]  # 不用nc，直接用Redis自带命令
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s 
 
 networks:
   kube:

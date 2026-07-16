@@ -2,7 +2,7 @@ package example_test
 
 import (
 	"bytes"
-	"example/app/balance"
+	"example/encoding"
 	"example/generated/kubeapi"
 	"net/http"
 	"testing"
@@ -10,7 +10,7 @@ import (
 )
 
 func BenchmarkHTTPHello(b *testing.B) {
-	codec := balance.GetCodec("proto")
+	codec := encoding.GetCodec(encoding.Name())
 	req, err := codec.Marshal(&kubeapi.HelloRequest{Message: "HTTP Hello"})
 	if err != nil {
 		b.Error(err)
@@ -26,7 +26,7 @@ func BenchmarkHTTPHello(b *testing.B) {
 }
 
 func BenchmarkHTTPChat(b *testing.B) {
-	codec := balance.GetCodec("proto")
+	codec := encoding.GetCodec(encoding.Name())
 	req, err := codec.Marshal(&kubeapi.ChatRequest{Message: "HTTP Chat"})
 	if err != nil {
 		b.Error(err)
@@ -43,7 +43,7 @@ func BenchmarkHTTPChat(b *testing.B) {
 }
 
 func BenchmarkHTTPLogin(b *testing.B) {
-	codec := balance.GetCodec("proto")
+	codec := encoding.GetCodec(encoding.Name())
 	req, err := codec.Marshal(&kubeapi.ChatRequest{Message: "HTTP Chat"})
 	if err != nil {
 		b.Error(err)
@@ -60,7 +60,7 @@ func BenchmarkHTTPLogin(b *testing.B) {
 }
 
 func BenchmarkHTTPGetFriends(b *testing.B) {
-	codec := balance.GetCodec("proto")
+	codec := encoding.GetCodec(encoding.Name())
 	req, err := codec.Marshal(&kubeapi.GetFriendsRequest{})
 	if err != nil {
 		b.Error(err)
@@ -77,7 +77,7 @@ func BenchmarkHTTPGetFriends(b *testing.B) {
 }
 
 func BenchmarkHTTPGetActivity(b *testing.B) {
-	codec := balance.GetCodec("proto")
+	codec := encoding.GetCodec(encoding.Name())
 	req, err := codec.Marshal(&kubeapi.GetActivityRequest{})
 	if err != nil {
 		b.Error(err)
@@ -94,7 +94,7 @@ func BenchmarkHTTPGetActivity(b *testing.B) {
 }
 
 func BenchmarkHTTPGetMail(b *testing.B) {
-	codec := balance.GetCodec("proto")
+	codec := encoding.GetCodec(encoding.Name())
 	req, err := codec.Marshal(&kubeapi.GetMailRequest{})
 	if err != nil {
 		b.Error(err)
@@ -111,7 +111,7 @@ func BenchmarkHTTPGetMail(b *testing.B) {
 }
 
 func BenchmarkHTTPDownload(b *testing.B) {
-	codec := balance.GetCodec("proto")
+	codec := encoding.GetCodec(encoding.Name())
 	req, err := codec.Marshal(&kubeapi.DownloadRequest{})
 	if err != nil {
 		b.Error(err)

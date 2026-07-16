@@ -15,3 +15,5 @@ message Response {
   string Message = 2;
   bytes Payload = 3;
 }
+
+message Empty {}

@@ -4,12 +4,21 @@ import (
 	"context"
 	"example/app/item"
 	"example/generated/kubeapi"
+	"log/slog"
+	"os/signal"
+	"syscall"
 
 	"github.com/vimcoders/grpcx"
 )
 
 func main() {
-	server := grpcx.NewServer()
-	server.RegisterService(&kubeapi.ItemService_ServiceDesc, &item.Handler{})
-	server.ListenAndServe(context.Background(), ":50055")
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	s := grpcx.NewServer()
+	s.RegisterService(&kubeapi.ItemService_ServiceDesc, &item.Handler{})
+	go func() {
+		_ = s.ListenAndServe(ctx, ":50055")
+		stop()
+	}()
+	slog.Info("running...")
+	<-ctx.Done()
 }

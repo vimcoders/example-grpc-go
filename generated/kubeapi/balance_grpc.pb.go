@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.2
 // - protoc             v7.35.1
-// source: proto/balance.proto
+// source: balance.proto
 
 package kubeapi
 
@@ -117,5 +117,5 @@ var BalanceService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/balance.proto",
+	Metadata: "balance.proto",
 }

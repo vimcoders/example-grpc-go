@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.2
 // - protoc             v7.35.1
-// source: proto/mail.proto
+// source: mail.proto
 
 package kubeapi
 
@@ -117,5 +117,5 @@ var MailService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/mail.proto",
+	Metadata: "mail.proto",
 }

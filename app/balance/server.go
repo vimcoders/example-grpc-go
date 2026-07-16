@@ -2,6 +2,7 @@ package balance
 
 import (
 	"context"
+	"crypto/tls"
 	"example/generated/kubeapi"
 	"io"
 	"log/slog"
@@ -11,9 +12,12 @@ import (
 	"sync"
 	"time"
 
+	"example/encoding"
+
+	"github.com/nats-io/nats.go"
+	"github.com/redis/go-redis/v9"
 	"github.com/vimcoders/grpcx"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/encoding"
 )
 
 type Option func(*Server)
@@ -25,15 +29,45 @@ type Server struct {
 	listener  net.Listener
 	closed    context.CancelFunc
 	endpoints []RoundTripper
+	nc        *nats.Conn
+	kubeapi.PushServiceServer
+	redis.UniversalClient
 }
 
 func NewServer(opt ...Option) *Server {
+	nc, err := nats.Connect("nats://nats:4222")
+	if err != nil {
+		panic(err)
+	}
 	var s = Server{
-		Codec: GetCodec("proto"),
-		desc:  &kubeapi.BalanceService_ServiceDesc,
+		nc:              nc,
+		Codec:           encoding.GetCodec(encoding.Name()),
+		desc:            &kubeapi.BalanceService_ServiceDesc,
+		UniversalClient: newUniversalClient(context.Background()),
 	}
 	for i := range opt {
 		opt[i](&s)
+	}
+	if err := s.RegisterService(&kubeapi.ChatService_ServiceDesc, "chat:50051"); err != nil {
+		panic(err)
+	}
+	if err := s.RegisterService(&kubeapi.SocialService_ServiceDesc, "social:50052"); err != nil {
+		panic(err)
+	}
+	if err := s.RegisterService(&kubeapi.ProxyService_ServiceDesc, "proxy:50053"); err != nil {
+		panic(err)
+	}
+	if err := s.RegisterService(&kubeapi.ActivityService_ServiceDesc, "activity:50054"); err != nil {
+		panic(err)
+	}
+	if err := s.RegisterService(&kubeapi.ItemService_ServiceDesc, "item:50055"); err != nil {
+		panic(err)
+	}
+	if err := s.RegisterService(&kubeapi.MailService_ServiceDesc, "mail:50056"); err != nil {
+		panic(err)
+	}
+	if err := s.RegisterService(&kubeapi.GMService_ServiceDesc, "gm:50057"); err != nil {
+		panic(err)
 	}
 	return &s
 }
@@ -43,6 +77,34 @@ func (s *Server) ListenAndServe(ctx context.Context, addr string, opt ...Option)
 		opt[i](s)
 	}
 	listener, err := net.Listen("tcp", addr)
+	if err != nil {
+		return err
+	}
+	s.listener = listener
+	cancelCtx, closed := context.WithCancel(ctx)
+	s.closed = closed
+	defer s.Close()
+	for {
+		conn, err := listener.Accept()
+		if err != nil {
+			return err
+		}
+		s.wg.Go(func() {
+			session := Session{
+				endpoints: s.endpoints,
+				desc:      s.desc,
+				Codec:     s.Codec,
+			}
+			_ = session.Handle(cancelCtx, conn)
+		})
+	}
+}
+
+func (s *Server) ListenAndServeTLS(ctx context.Context, addr string, opt ...Option) error {
+	for i := range opt {
+		opt[i](s)
+	}
+	listener, err := tls.Listen("tcp", addr, &tls.Config{})
 	if err != nil {
 		return err
 	}
@@ -123,7 +185,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // invoking Serve. If ss is non-nil (for legacy code), its type is checked to
 // ensure it implements sd.HandlerType.
 func (s *Server) RegisterService(sd *grpc.ServiceDesc, endpoint string) error {
-	cc, err := grpcx.Dial(endpoint)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	cc, err := grpcx.DialContext(ctx, endpoint)
 	if err != nil {
 		return err
 	}

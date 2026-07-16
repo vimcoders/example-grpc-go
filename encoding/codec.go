@@ -1,4 +1,4 @@
-package balance
+package encoding
 
 import (
 	"encoding/json"
@@ -9,6 +9,10 @@ import (
 )
 
 type Codec encoding.Codec
+
+func Name() string {
+	return defaultCodec.Name()
+}
 
 // GetCodec returns a new instance of the proto codec.
 type codec struct{}

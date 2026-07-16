@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        v7.35.1
-// source: proto/types.proto
+// source: types.proto
 
 package kubeapi
 
@@ -34,7 +34,7 @@ type Request struct {
 
 func (x *Request) Reset() {
 	*x = Request{}
-	mi := &file_proto_types_proto_msgTypes[0]
+	mi := &file_types_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -46,7 +46,7 @@ func (x *Request) String() string {
 func (*Request) ProtoMessage() {}
 
 func (x *Request) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_types_proto_msgTypes[0]
+	mi := &file_types_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -59,7 +59,7 @@ func (x *Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Request.ProtoReflect.Descriptor instead.
 func (*Request) Descriptor() ([]byte, []int) {
-	return file_proto_types_proto_rawDescGZIP(), []int{0}
+	return file_types_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Request) GetService() string {
@@ -108,7 +108,7 @@ type Response struct {
 
 func (x *Response) Reset() {
 	*x = Response{}
-	mi := &file_proto_types_proto_msgTypes[1]
+	mi := &file_types_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -120,7 +120,7 @@ func (x *Response) String() string {
 func (*Response) ProtoMessage() {}
 
 func (x *Response) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_types_proto_msgTypes[1]
+	mi := &file_types_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -133,7 +133,7 @@ func (x *Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Response.ProtoReflect.Descriptor instead.
 func (*Response) Descriptor() ([]byte, []int) {
-	return file_proto_types_proto_rawDescGZIP(), []int{1}
+	return file_types_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Response) GetCode() int32 {
@@ -157,11 +157,47 @@ func (x *Response) GetPayload() []byte {
 	return nil
 }
 
-var File_proto_types_proto protoreflect.FileDescriptor
+type Empty struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
 
-const file_proto_types_proto_rawDesc = "" +
+func (x *Empty) Reset() {
+	*x = Empty{}
+	mi := &file_types_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Empty) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Empty) ProtoMessage() {}
+
+func (x *Empty) ProtoReflect() protoreflect.Message {
+	mi := &file_types_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Empty.ProtoReflect.Descriptor instead.
+func (*Empty) Descriptor() ([]byte, []int) {
+	return file_types_proto_rawDescGZIP(), []int{2}
+}
+
+var File_types_proto protoreflect.FileDescriptor
+
+const file_types_proto_rawDesc = "" +
 	"\n" +
-	"\x11proto/types.proto\x12\akubeapi\"\x8d\x01\n" +
+	"\vtypes.proto\x12\akubeapi\"\x8d\x01\n" +
 	"\aRequest\x12\x18\n" +
 	"\aService\x18\x01 \x01(\tR\aService\x12\x16\n" +
 	"\x06Method\x18\x02 \x01(\tR\x06Method\x12\x18\n" +
@@ -171,27 +207,29 @@ const file_proto_types_proto_rawDesc = "" +
 	"\bResponse\x12\x12\n" +
 	"\x04Code\x18\x01 \x01(\x05R\x04Code\x12\x18\n" +
 	"\aMessage\x18\x02 \x01(\tR\aMessage\x12\x18\n" +
-	"\aPayload\x18\x03 \x01(\fR\aPayloadB\fZ\n" +
+	"\aPayload\x18\x03 \x01(\fR\aPayload\"\a\n" +
+	"\x05EmptyB\fZ\n" +
 	"./;kubeapib\x06proto3"
 
 var (
-	file_proto_types_proto_rawDescOnce sync.Once
-	file_proto_types_proto_rawDescData []byte
+	file_types_proto_rawDescOnce sync.Once
+	file_types_proto_rawDescData []byte
 )
 
-func file_proto_types_proto_rawDescGZIP() []byte {
-	file_proto_types_proto_rawDescOnce.Do(func() {
-		file_proto_types_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_types_proto_rawDesc), len(file_proto_types_proto_rawDesc)))
+func file_types_proto_rawDescGZIP() []byte {
+	file_types_proto_rawDescOnce.Do(func() {
+		file_types_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_types_proto_rawDesc), len(file_types_proto_rawDesc)))
 	})
-	return file_proto_types_proto_rawDescData
+	return file_types_proto_rawDescData
 }
 
-var file_proto_types_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_proto_types_proto_goTypes = []any{
+var file_types_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_types_proto_goTypes = []any{
 	(*Request)(nil),  // 0: kubeapi.Request
 	(*Response)(nil), // 1: kubeapi.Response
+	(*Empty)(nil),    // 2: kubeapi.Empty
 }
-var file_proto_types_proto_depIdxs = []int32{
+var file_types_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -199,26 +237,26 @@ var file_proto_types_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_proto_types_proto_init() }
-func file_proto_types_proto_init() {
-	if File_proto_types_proto != nil {
+func init() { file_types_proto_init() }
+func file_types_proto_init() {
+	if File_types_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_types_proto_rawDesc), len(file_proto_types_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_types_proto_rawDesc), len(file_types_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_proto_types_proto_goTypes,
-		DependencyIndexes: file_proto_types_proto_depIdxs,
-		MessageInfos:      file_proto_types_proto_msgTypes,
+		GoTypes:           file_types_proto_goTypes,
+		DependencyIndexes: file_types_proto_depIdxs,
+		MessageInfos:      file_types_proto_msgTypes,
 	}.Build()
-	File_proto_types_proto = out.File
-	file_proto_types_proto_goTypes = nil
-	file_proto_types_proto_depIdxs = nil
+	File_types_proto = out.File
+	file_types_proto_goTypes = nil
+	file_types_proto_depIdxs = nil
 }

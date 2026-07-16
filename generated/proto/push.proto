@@ -1,0 +1,9 @@
+syntax = "proto3";
+package kubeapi;
+option go_package = "./;kubeapi";
+
+message PushChatResponse {}
+
+service PushService {
+  rpc PushChat(PushChatResponse) returns (PushChatResponse);
+}
