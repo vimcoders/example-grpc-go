@@ -15,8 +15,12 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	server := balance.NewServer()
 	go func() {
+		defer stop()
 		_ = server.ListenAndServe(ctx, ":26888")
-		stop()
+	}()
+	go func() {
+		defer stop()
+		_ = server.ListenAndServeTLS(ctx, ":56888")
 	}()
 	svr := &http.Server{
 		Addr:           ":36888",
@@ -27,8 +31,8 @@ func main() {
 		MaxHeaderBytes: math.MaxInt16,
 	}
 	go func() {
+		defer stop()
 		_ = svr.ListenAndServe()
-		stop()
 	}()
 	slog.Info("running...")
 	<-ctx.Done()

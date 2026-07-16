@@ -2,35 +2,20 @@ package example_test
 
 import (
 	"bufio"
-	"encoding/binary"
+	"crypto/tls"
 	"example/generated/kubeapi"
-	"io"
 	"log/slog"
 	"math"
-	"net"
 	"path"
 	"testing"
 	"time"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 )
 
-const (
-	messageHeaderLength = 4
-	messageLengthMax    = math.MaxUint16
-)
-
-type channel struct {
-	net.Conn
-	br *bufio.Reader
-}
-
-// NewChannel creates a new channel with the given net.Conn.
-func newChannel() *channel {
+func newTLSChannel() *channel {
 	for range math.MaxInt8 {
-		c, err := net.Dial("tcp", "localhost:26888")
+		c, err := tls.Dial("tcp", "localhost:56888", &tls.Config{InsecureSkipVerify: true})
 		if err != nil {
 			slog.Error(err.Error())
 			continue
@@ -43,55 +28,8 @@ func newChannel() *channel {
 	panic("outofrange")
 }
 
-// recv a message from the channel. The returned buffer contains the message.
-//
-// If a valid grpc status is returned, the message header
-// returned will be valid and caller should send that along to
-// the correct consumer. The bytes on the underlying channel
-// will be discarded.
-func (ch *channel) Recv() ([]byte, error) {
-	var hrbuf [messageHeaderLength]byte // avoid alloc when reading header
-	_, err := io.ReadFull(ch.br, hrbuf[:])
-	if err != nil {
-		return nil, err
-	}
-
-	h := binary.BigEndian.Uint32(hrbuf[:4])
-
-	if h > uint32(messageLengthMax) {
-		if _, err := ch.br.Discard(int(h)); err != nil {
-			return nil, err
-		}
-
-		return nil, status.Error(codes.OutOfRange, codes.OutOfRange.String())
-	}
-
-	p := make([]byte, h)
-	if _, err := io.ReadFull(ch.br, p); err != nil {
-		return nil, err
-	}
-
-	return p, nil
-}
-
-// Send sends a message to the channel. The message is prefixed with a fixed-length header containing the length of the message and the stream ID.
-func (ch *channel) Send(p []byte) error {
-	if len(p) > messageLengthMax {
-		return status.Error(codes.OutOfRange, codes.OutOfRange.String())
-	}
-	hwbuf := make([]byte, len(p)+messageHeaderLength)
-	binary.BigEndian.PutUint32(hwbuf[:messageHeaderLength], uint32(len(p)))
-	copy(hwbuf[messageHeaderLength:], p)
-
-	_, err := ch.Write(hwbuf)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func BenchmarkTCPHello(b *testing.B) {
-	ch := newChannel()
+func BenchmarkTLSHello(b *testing.B) {
+	ch := newTLSChannel()
 	req := kubeapi.Request{
 		Method:  path.Base(kubeapi.BalanceService_Hello_FullMethodName),
 		Timeout: int64(time.Second),
@@ -111,8 +49,8 @@ func BenchmarkTCPHello(b *testing.B) {
 	}
 }
 
-func BenchmarkTCPChat(b *testing.B) {
-	ch := newChannel()
+func BenchmarkTLSChat(b *testing.B) {
+	ch := newTLSChannel()
 	req := kubeapi.Request{
 		Method:  path.Base(kubeapi.ChatService_Chat_FullMethodName),
 		Timeout: int64(time.Second),
@@ -132,8 +70,8 @@ func BenchmarkTCPChat(b *testing.B) {
 	}
 }
 
-func BenchmarkTCPLogin(b *testing.B) {
-	ch := newChannel()
+func BenchmarkTLSLogin(b *testing.B) {
+	ch := newTLSChannel()
 	req := kubeapi.Request{
 		Method:  path.Base(kubeapi.ProxyService_Login_FullMethodName),
 		Timeout: int64(time.Second),
@@ -153,8 +91,8 @@ func BenchmarkTCPLogin(b *testing.B) {
 	}
 }
 
-func BenchmarkTCPGetFriends(b *testing.B) {
-	ch := newChannel()
+func BenchmarkTLSGetFriends(b *testing.B) {
+	ch := newTLSChannel()
 	req := kubeapi.Request{
 		Method:  path.Base(kubeapi.SocialService_GetFriends_FullMethodName),
 		Timeout: int64(time.Second),
@@ -174,8 +112,8 @@ func BenchmarkTCPGetFriends(b *testing.B) {
 	}
 }
 
-func BenchmarkTCPGetActivity(b *testing.B) {
-	ch := newChannel()
+func BenchmarkTLSGetActivity(b *testing.B) {
+	ch := newTLSChannel()
 	req := kubeapi.Request{
 		Method:  path.Base(kubeapi.ActivityService_GetActivity_FullMethodName),
 		Timeout: int64(time.Second),
@@ -195,8 +133,8 @@ func BenchmarkTCPGetActivity(b *testing.B) {
 	}
 }
 
-func BenchmarkTCPGetMail(b *testing.B) {
-	ch := newChannel()
+func BenchmarkTLSGetMail(b *testing.B) {
+	ch := newTLSChannel()
 	req := kubeapi.Request{
 		Method:  path.Base(kubeapi.MailService_GetMail_FullMethodName),
 		Timeout: int64(time.Second),
@@ -216,8 +154,8 @@ func BenchmarkTCPGetMail(b *testing.B) {
 	}
 }
 
-func BenchmarkTCPDownload(b *testing.B) {
-	ch := newChannel()
+func BenchmarkTLSDownload(b *testing.B) {
+	ch := newTLSChannel()
 	req := kubeapi.Request{
 		Method:  path.Base(kubeapi.ItemService_Download_FullMethodName),
 		Timeout: int64(time.Second),

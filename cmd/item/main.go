@@ -16,8 +16,8 @@ func main() {
 	s := grpcx.NewServer()
 	s.RegisterService(&kubeapi.ItemService_ServiceDesc, &item.Handler{})
 	go func() {
+		defer stop()
 		_ = s.ListenAndServe(ctx, ":50055")
-		stop()
 	}()
 	slog.Info("running...")
 	<-ctx.Done()

@@ -104,7 +104,18 @@ func (s *Server) ListenAndServeTLS(ctx context.Context, addr string, opt ...Opti
 	for i := range opt {
 		opt[i](s)
 	}
-	listener, err := tls.Listen("tcp", addr, &tls.Config{})
+	certData, keyData, err := GenerateSignedCert()
+	if err != nil {
+		panic(err)
+	}
+	cert, err := tls.X509KeyPair(certData, keyData)
+	if err != nil {
+		panic(err)
+	}
+	listener, err := tls.Listen("tcp", addr, &tls.Config{
+		Certificates: []tls.Certificate{cert},
+		MinVersion:   tls.VersionTLS12,
+	})
 	if err != nil {
 		return err
 	}

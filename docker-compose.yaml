@@ -29,6 +29,8 @@ services:
     ports:
       - "26888:26888"
       - "36888:36888"
+      - "56888:56888"
+
   proxy:
     build:
       dockerfile: cmd/proxy/Dockerfile

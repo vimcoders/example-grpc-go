@@ -16,8 +16,8 @@ func main() {
 	s := grpcx.NewServer()
 	s.RegisterService(&kubeapi.ProxyService_ServiceDesc, &proxy.Handler{})
 	go func() {
+		defer stop()
 		_ = s.ListenAndServe(ctx, ":50053")
-		stop()
 	}()
 	slog.Info("running...")
 	<-ctx.Done()
