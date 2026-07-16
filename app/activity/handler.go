@@ -7,7 +7,7 @@ import (
 )
 
 type Handler struct {
-	kubeapi.ActivityServiceServer
+	kubeapi.UnimplementedActivityServiceServer
 }
 
 func (h *Handler) GetActivity(ctx context.Context, in *kubeapi.GetActivityRequest) (*kubeapi.GetActivityResponse, error) {
