@@ -7,7 +7,7 @@ import (
 )
 
 type Handler struct {
-	kubeapi.MailServiceServer
+	kubeapi.UnimplementedMailServiceServer
 }
 
 func (h *Handler) GetMail(ctx context.Context, in *kubeapi.GetMailRequest) (*kubeapi.GetMailResponse, error) {

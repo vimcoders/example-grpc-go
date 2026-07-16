@@ -7,7 +7,7 @@ import (
 )
 
 type Handler struct {
-	kubeapi.ProxyServiceServer
+	kubeapi.UnimplementedProxyServiceServer
 }
 
 func (h *Handler) Login(ctx context.Context, in *kubeapi.LoginRequest) (*kubeapi.LoginResponse, error) {

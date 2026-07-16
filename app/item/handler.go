@@ -7,7 +7,7 @@ import (
 )
 
 type Handler struct {
-	kubeapi.ItemServiceServer
+	kubeapi.UnimplementedItemServiceServer
 }
 
 func (h *Handler) Download(ctx context.Context, in *kubeapi.DownloadRequest) (*kubeapi.DownloadResponse, error) {

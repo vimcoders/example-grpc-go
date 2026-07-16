@@ -30,7 +30,7 @@ type Server struct {
 	closed    context.CancelFunc
 	endpoints []RoundTripper
 	nc        *nats.Conn
-	kubeapi.PushServiceServer
+	kubeapi.UnimplementedPushServiceServer
 	redis.UniversalClient
 }
 

@@ -7,7 +7,7 @@ import (
 )
 
 type Handler struct {
-	kubeapi.SocialServiceServer
+	kubeapi.UnimplementedSocialServiceServer
 }
 
 func (h *Handler) GetFriends(ctx context.Context, in *kubeapi.GetFriendsRequest) (*kubeapi.GetFriendsResponse, error) {

@@ -7,7 +7,7 @@ import (
 )
 
 type Handler struct {
-	kubeapi.GMServiceServer
+	kubeapi.UnimplementedGMServiceServer
 }
 
 func (h *Handler) SendCommand(ctx context.Context, in *kubeapi.SendCommandRequest) (*kubeapi.SendCommandResponse, error) {
