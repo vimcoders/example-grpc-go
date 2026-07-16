@@ -13,18 +13,18 @@ import (
 
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	server := balance.NewServer()
+	s := balance.NewServer()
 	go func() {
 		defer stop()
-		_ = server.ListenAndServe(ctx, ":26888")
+		_ = s.ListenAndServe(ctx, ":26888")
 	}()
 	go func() {
 		defer stop()
-		_ = server.ListenAndServeTLS(ctx, ":56888")
+		_ = s.ListenAndServeTLS(ctx, ":56888")
 	}()
 	svr := &http.Server{
 		Addr:           ":36888",
-		Handler:        server,
+		Handler:        s,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		IdleTimeout:    30 * time.Second,
