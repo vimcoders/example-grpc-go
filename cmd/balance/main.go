@@ -17,7 +17,10 @@ import (
 
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	s := balance.NewServer()
+	s := balance.NewServer(
+		balance.WithRedisService(os.Getenv("RedisService")),
+		balance.WithNatsService(os.Getenv("NatsService")),
+	)
 	for _, v := range []struct {
 		endpoint string
 		desc     grpc.ServiceDesc
