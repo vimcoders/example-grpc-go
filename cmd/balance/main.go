@@ -37,26 +37,33 @@ func main() {
 			panic(err)
 		}
 	}
-	go func() {
-		defer stop()
-		_ = s.ListenAndServe(ctx, os.Getenv("TCPPort"))
-	}()
-	go func() {
-		defer stop()
-		_ = s.ListenAndServeTLS(ctx, os.Getenv("TLSPort"))
-	}()
-	svr := &http.Server{
-		Addr:           os.Getenv("HTTPPort"),
-		Handler:        s,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		IdleTimeout:    30 * time.Second,
-		MaxHeaderBytes: math.MaxInt16,
+	if e := os.Getenv("TCPPort"); len(e) > 0 {
+		go func() {
+			defer stop()
+			_ = s.ListenAndServe(ctx, e)
+		}()
 	}
-	go func() {
-		defer stop()
-		_ = svr.ListenAndServe()
-	}()
+	if e := os.Getenv("TLSPort"); len(e) > 0 {
+		go func() {
+			defer stop()
+			_ = s.ListenAndServeTLS(ctx, e)
+		}()
+	}
+	if e := os.Getenv("HTTPPort"); len(e) > 0 {
+		svr := &http.Server{
+			Addr:           e,
+			Handler:        s,
+			ReadTimeout:    10 * time.Second,
+			WriteTimeout:   10 * time.Second,
+			IdleTimeout:    30 * time.Second,
+			MaxHeaderBytes: math.MaxInt16,
+		}
+		go func() {
+			defer stop()
+			_ = svr.ListenAndServe()
+			svr.Shutdown(ctx)
+		}()
+	}
 	slog.Info("running...")
 	<-ctx.Done()
 }
