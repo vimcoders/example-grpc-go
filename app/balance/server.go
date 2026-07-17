@@ -35,7 +35,7 @@ type Server struct {
 }
 
 func NewServer(opt ...Option) *Server {
-	nc, err := nats.Connect("nats://nats:4222")
+	nc, err := nats.Connect("nats://nats-1:4222,nats://nats-2:4222,nats://nats-3:4222")
 	if err != nil {
 		panic(err)
 	}

@@ -23,7 +23,7 @@ func main() {
 		_ = s.ListenAndServeTLS(ctx, ":56888")
 	}()
 	svr := &http.Server{
-		Addr:           ":36888",
+		Addr:           ":16888",
 		Handler:        s,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
