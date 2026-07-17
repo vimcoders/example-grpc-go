@@ -9,6 +9,16 @@ services:
       - example  # 加入私有网络
     environment:
       MYSQL: ${MYSQL_DSN}
+      ChatService: ${Chat_Service}
+      SocialService: ${Social_Service}
+      ProxyService: ${Proxy_Service}
+      ActivityService: ${Activity_Service}
+      ItemService: ${Item_Service}
+      MailService: ${Mail_Service}
+      GMService: ${GM_Service}
+      TLSPort: ${Balance_TLS_Port}
+      TCPPort: ${Balance_TCP_Port}
+      HTTPPort: ${Balance_HTTP_Port}
     depends_on:
       redis-1: { condition: service_healthy }
       redis-2: { condition: service_healthy }
@@ -35,6 +45,7 @@ services:
       - example  # 加入私有网络
     environment:
       MYSQL: ${MYSQL_DSN}
+      Port: ${Proxy_Port}
     depends_on:
       redis-1: { condition: service_healthy }
       redis-2: { condition: service_healthy }
@@ -56,6 +67,7 @@ services:
       - example  # 加入私有网络
     environment:
       MYSQL: ${MYSQL_DSN}
+      Port: ${Social_Port}
     depends_on:
       redis-1: { condition: service_healthy }
       redis-2: { condition: service_healthy }
@@ -77,6 +89,7 @@ services:
       - example  # 加入私有网络
     environment:
       MYSQL: ${MYSQL_DSN}
+      Port: ${Chat_Port}
     depends_on:
       redis-1: { condition: service_healthy }
       redis-2: { condition: service_healthy }
@@ -98,6 +111,7 @@ services:
       - example  # 加入私有网络
     environment:
       MYSQL: ${MYSQL_DSN}
+      Port: ${Activity_Port}
     depends_on:
       redis-1: { condition: service_healthy }
       redis-2: { condition: service_healthy }
@@ -119,6 +133,7 @@ services:
       - example  # 加入私有网络
     environment:
       MYSQL: ${MYSQL_DSN}
+      Port: ${Item_Port}
     depends_on:
       redis-1: { condition: service_healthy }
       redis-2: { condition: service_healthy }
@@ -140,6 +155,7 @@ services:
       - example  # 加入私有网络
     environment:
       MYSQL: ${MYSQL_DSN}
+      Port: ${Mail_Port}
     depends_on:
       redis-1: { condition: service_healthy }
       redis-2: { condition: service_healthy }
@@ -161,6 +177,7 @@ services:
       - example  # 加入私有网络
     environment:
       MYSQL: ${MYSQL_DSN}
+      Port: ${GM_Port}
     depends_on:
       redis-1: { condition: service_healthy }
       redis-2: { condition: service_healthy }

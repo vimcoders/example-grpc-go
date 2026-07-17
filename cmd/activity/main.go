@@ -5,6 +5,7 @@ import (
 	"example/app/activity"
 	"example/generated/kubeapi"
 	"log/slog"
+	"os"
 	"os/signal"
 	"syscall"
 
@@ -17,7 +18,7 @@ func main() {
 	s.RegisterService(&kubeapi.ActivityService_ServiceDesc, &activity.Handler{})
 	go func() {
 		defer stop()
-		s.ListenAndServe(context.Background(), ":50054")
+		s.ListenAndServe(context.Background(), os.Getenv("Port"))
 	}()
 	slog.Info("running...")
 	<-ctx.Done()

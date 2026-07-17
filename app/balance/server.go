@@ -9,6 +9,7 @@ import (
 	"net"
 	"net/http"
 	"path"
+	"strings"
 	"sync"
 	"time"
 
@@ -23,15 +24,8 @@ import (
 type Option func(*Server)
 
 type Options struct {
-	redisAddr    []string `yaml:"redis"`
-	natsAddr     string   `yaml:"nats"`
-	chatAddr     string   `yaml:"chat"`
-	socialAddr   string   `yaml:"social"`
-	proxyAddr    string   `yaml:"proxy"`
-	activityAddr string   `yaml:"activity"`
-	itemAddr     string   `yaml:"item"`
-	mailAddr     string   `yaml:"mail"`
-	gmAddr       string   `yaml:"gm"`
+	redisAddr []string `yaml:"redis"`
+	natsAddr  []string `yaml:"nats"`
 }
 
 var defaultOptions = Options{
@@ -43,14 +37,11 @@ var defaultOptions = Options{
 		"redis-5:6379",
 		"redis-6:6379",
 	},
-	natsAddr:     "nats://nats-1:4222,nats://nats-2:4222,nats://nats-3:4222",
-	chatAddr:     "chat:50051",
-	socialAddr:   "social:50052",
-	proxyAddr:    "proxy:50053",
-	activityAddr: "activity:50054",
-	itemAddr:     "item:50055",
-	mailAddr:     "mail:50056",
-	gmAddr:       "gm:50057",
+	natsAddr: []string{
+		"nats://nats-1:4222",
+		"nats://nats-2:4222",
+		"nats://nats-3:4222",
+	},
 }
 
 type Server struct {
@@ -75,29 +66,8 @@ func NewServer(opt ...Option) *Server {
 	for i := range opt {
 		opt[i](&s)
 	}
-	nc, err := nats.Connect(s.natsAddr)
+	nc, err := nats.Connect(strings.Join(s.natsAddr, ","))
 	if err != nil {
-		panic(err)
-	}
-	if err := s.RegisterService(&kubeapi.ChatService_ServiceDesc, s.chatAddr); err != nil {
-		panic(err)
-	}
-	if err := s.RegisterService(&kubeapi.SocialService_ServiceDesc, s.socialAddr); err != nil {
-		panic(err)
-	}
-	if err := s.RegisterService(&kubeapi.ProxyService_ServiceDesc, s.proxyAddr); err != nil {
-		panic(err)
-	}
-	if err := s.RegisterService(&kubeapi.ActivityService_ServiceDesc, s.activityAddr); err != nil {
-		panic(err)
-	}
-	if err := s.RegisterService(&kubeapi.ItemService_ServiceDesc, s.itemAddr); err != nil {
-		panic(err)
-	}
-	if err := s.RegisterService(&kubeapi.MailService_ServiceDesc, s.mailAddr); err != nil {
-		panic(err)
-	}
-	if err := s.RegisterService(&kubeapi.GMService_ServiceDesc, s.gmAddr); err != nil {
 		panic(err)
 	}
 	s.nc = nc
