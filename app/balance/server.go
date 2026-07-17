@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
+	"os"
 	"path"
 	"strings"
 	"sync"
@@ -58,8 +59,15 @@ type Server struct {
 }
 
 func NewServer(opt ...Option) *Server {
+	opts := defaultOptions
+	if e := os.Getenv("NatsService"); len(e) > 0 {
+		opts.natsAddr = strings.Split(e, ",")
+	}
+	if e := os.Getenv("RedisService"); len(e) > 0 {
+		opts.redisAddr = strings.Split(e, ",")
+	}
 	var s = Server{
-		Options: defaultOptions,
+		Options: opts,
 		Codec:   encoding.GetCodec(encoding.Name()),
 		desc:    &kubeapi.BalanceService_ServiceDesc,
 	}

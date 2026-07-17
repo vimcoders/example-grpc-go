@@ -16,6 +16,8 @@ services:
       ItemService: ${Item_Service}
       MailService: ${Mail_Service}
       GMService: ${GM_Service}
+      RedisService: ${Redis_Service}
+      NatsService: ${Nats_Service}
       TLSPort: ${Balance_TLS_Port}
       TCPPort: ${Balance_TCP_Port}
       HTTPPort: ${Balance_HTTP_Port}
