@@ -36,7 +36,16 @@ services:
     environment:
       MYSQL: ${MYSQL_DSN}
     depends_on:
+      redis-1: { condition: service_healthy }
+      redis-2: { condition: service_healthy }
+      redis-3: { condition: service_healthy }
+      redis-4: { condition: service_healthy }
+      redis-5: { condition: service_healthy }
+      redis-6: { condition: service_healthy }
       mysql: { condition: service_healthy }  # 等待 mysql 健康后再启动
+      nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
+      nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
+      nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
   social:
     build:
       dockerfile: cmd/social/Dockerfile
@@ -48,7 +57,16 @@ services:
     environment:
       MYSQL: ${MYSQL_DSN}
     depends_on:
+      redis-1: { condition: service_healthy }
+      redis-2: { condition: service_healthy }
+      redis-3: { condition: service_healthy }
+      redis-4: { condition: service_healthy }
+      redis-5: { condition: service_healthy }
+      redis-6: { condition: service_healthy }
       mysql: { condition: service_healthy }  # 等待 mysql 健康后再启动
+      nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
+      nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
+      nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
   chat:
     build:
       dockerfile: cmd/chat/Dockerfile
@@ -60,7 +78,16 @@ services:
     environment:
       MYSQL: ${MYSQL_DSN}
     depends_on:
+      redis-1: { condition: service_healthy }
+      redis-2: { condition: service_healthy }
+      redis-3: { condition: service_healthy }
+      redis-4: { condition: service_healthy }
+      redis-5: { condition: service_healthy }
+      redis-6: { condition: service_healthy }
       mysql: { condition: service_healthy }  # 等待 mysql 健康后再启动
+      nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
+      nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
+      nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
   activity:
     build:
       dockerfile: cmd/activity/Dockerfile
@@ -72,7 +99,16 @@ services:
     environment:
       MYSQL: ${MYSQL_DSN}
     depends_on:
+      redis-1: { condition: service_healthy }
+      redis-2: { condition: service_healthy }
+      redis-3: { condition: service_healthy }
+      redis-4: { condition: service_healthy }
+      redis-5: { condition: service_healthy }
+      redis-6: { condition: service_healthy }
       mysql: { condition: service_healthy }  # 等待 mysql 健康后再启动
+      nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
+      nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
+      nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
   item:
     build:
       dockerfile: cmd/item/Dockerfile
@@ -84,7 +120,16 @@ services:
     environment:
       MYSQL: ${MYSQL_DSN}
     depends_on:
+      redis-1: { condition: service_healthy }
+      redis-2: { condition: service_healthy }
+      redis-3: { condition: service_healthy }
+      redis-4: { condition: service_healthy }
+      redis-5: { condition: service_healthy }
+      redis-6: { condition: service_healthy }
       mysql: { condition: service_healthy }  # 等待 mysql 健康后再启动
+      nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
+      nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
+      nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
   mail:
     build:
       dockerfile: cmd/mail/Dockerfile
@@ -96,7 +141,16 @@ services:
     environment:
       MYSQL: ${MYSQL_DSN}
     depends_on:
+      redis-1: { condition: service_healthy }
+      redis-2: { condition: service_healthy }
+      redis-3: { condition: service_healthy }
+      redis-4: { condition: service_healthy }
+      redis-5: { condition: service_healthy }
+      redis-6: { condition: service_healthy }
       mysql: { condition: service_healthy }  # 等待 mysql 健康后再启动
+      nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
+      nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
+      nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
   gm:
     build:
       dockerfile: cmd/gm/Dockerfile
@@ -108,7 +162,16 @@ services:
     environment:
       MYSQL: ${MYSQL_DSN}
     depends_on:
+      redis-1: { condition: service_healthy }
+      redis-2: { condition: service_healthy }
+      redis-3: { condition: service_healthy }
+      redis-4: { condition: service_healthy }
+      redis-5: { condition: service_healthy }
+      redis-6: { condition: service_healthy }
       mysql: { condition: service_healthy }  # 等待 mysql 健康后再启动
+      nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
+      nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
+      nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
   mysql:
     image: mysql:latest
     container_name: mysql
