@@ -2,6 +2,7 @@
 chcp 65001 >nul
 cls
 
+git config core.autocrlf input
 go env -w GOPROXY=https://goproxy.cn,https://mirrors.aliyun.com/goproxy,direct && go env -w GOSUMDB=sum.golang.google.cn
 go install golang.org/x/tools/gopls@latest
 go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
