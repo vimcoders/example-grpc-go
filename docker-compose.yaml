@@ -21,8 +21,8 @@ services:
       nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
     ports:
+      - "16888:16888"
       - "26888:26888"
-      - "36888:36888"
       - "56888:56888"
 
   proxy:
