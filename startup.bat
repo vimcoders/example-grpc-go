@@ -10,7 +10,7 @@ echo 💡 安装代码自动补全 gopls
 go install golang.org/x/tools/gopls@latest
 echo 🧹 安装代码规范检测 golangci-lint v2
 go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
-echo 📦 安装Protobuf & gRPC 代码生成工具
+echo 📦 安装 gRPC 代码生成工具
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 echo ✨ 安装Protobuf格式化工具
