@@ -1,12 +1,8 @@
 {
   "protobuf.includes": [
-    "${workspaceFolder}/generated/proto"
+    "${workspaceFolder}/generated/proto",
+    "${workspaceFolder}/generated/protoc-35.1-win64/include"
   ],
-  "protobuf.formatter.enabled": true,
-  "[proto3]": {
-    "editor.defaultFormatter": "DrBlury.protobuf-vsc",
-    "editor.formatOnSave": true
-  },
   "filewatcher.commands": [
     {
       "match": "\\.proto$",
