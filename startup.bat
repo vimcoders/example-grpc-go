@@ -3,7 +3,10 @@ chcp 65001 >nul
 cls
 
 go env -w GOPROXY=https://goproxy.cn,https://mirrors.aliyun.com/goproxy,direct && go env -w GOSUMDB=sum.golang.google.cn
+go install golang.org/x/tools/gopls@latest
 go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
+go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 golangci-lint run --fix ./...
 
 for /f "delims=" %%a in ('powershell Get-Date -Format "yyyy-MM-dd"') do set BUILD_DATE=%%a

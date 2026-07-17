@@ -22,7 +22,39 @@ import (
 
 type Option func(*Server)
 
+type Options struct {
+	redisAddr    []string `yaml:"redis"`
+	natsAddr     string   `yaml:"nats"`
+	chatAddr     string   `yaml:"chat"`
+	socialAddr   string   `yaml:"social"`
+	proxyAddr    string   `yaml:"proxy"`
+	activityAddr string   `yaml:"activity"`
+	itemAddr     string   `yaml:"item"`
+	mailAddr     string   `yaml:"mail"`
+	gmAddr       string   `yaml:"gm"`
+}
+
+var defaultOptions = Options{
+	redisAddr: []string{
+		"redis-1:6379",
+		"redis-2:6379",
+		"redis-3:6379",
+		"redis-4:6379",
+		"redis-5:6379",
+		"redis-6:6379",
+	},
+	natsAddr:     "nats://nats-1:4222,nats://nats-2:4222,nats://nats-3:4222",
+	chatAddr:     "chat:50051",
+	socialAddr:   "social:50052",
+	proxyAddr:    "proxy:50053",
+	activityAddr: "activity:50054",
+	itemAddr:     "item:50055",
+	mailAddr:     "mail:50056",
+	gmAddr:       "gm:50057",
+}
+
 type Server struct {
+	Options
 	encoding.Codec
 	desc      *grpc.ServiceDesc
 	wg        sync.WaitGroup
@@ -31,44 +63,45 @@ type Server struct {
 	endpoints []RoundTripper
 	nc        *nats.Conn
 	kubeapi.UnimplementedPushServiceServer
-	redis.UniversalClient
+	universalClient redis.UniversalClient
 }
 
 func NewServer(opt ...Option) *Server {
-	nc, err := nats.Connect("nats://nats-1:4222,nats://nats-2:4222,nats://nats-3:4222")
-	if err != nil {
-		panic(err)
-	}
 	var s = Server{
-		nc:              nc,
-		Codec:           encoding.GetCodec(encoding.Name()),
-		desc:            &kubeapi.BalanceService_ServiceDesc,
-		UniversalClient: newUniversalClient(context.Background()),
+		Options: defaultOptions,
+		Codec:   encoding.GetCodec(encoding.Name()),
+		desc:    &kubeapi.BalanceService_ServiceDesc,
 	}
 	for i := range opt {
 		opt[i](&s)
 	}
-	if err := s.RegisterService(&kubeapi.ChatService_ServiceDesc, "chat:50051"); err != nil {
+	nc, err := nats.Connect(s.natsAddr)
+	if err != nil {
 		panic(err)
 	}
-	if err := s.RegisterService(&kubeapi.SocialService_ServiceDesc, "social:50052"); err != nil {
+	if err := s.RegisterService(&kubeapi.ChatService_ServiceDesc, s.chatAddr); err != nil {
 		panic(err)
 	}
-	if err := s.RegisterService(&kubeapi.ProxyService_ServiceDesc, "proxy:50053"); err != nil {
+	if err := s.RegisterService(&kubeapi.SocialService_ServiceDesc, s.socialAddr); err != nil {
 		panic(err)
 	}
-	if err := s.RegisterService(&kubeapi.ActivityService_ServiceDesc, "activity:50054"); err != nil {
+	if err := s.RegisterService(&kubeapi.ProxyService_ServiceDesc, s.proxyAddr); err != nil {
 		panic(err)
 	}
-	if err := s.RegisterService(&kubeapi.ItemService_ServiceDesc, "item:50055"); err != nil {
+	if err := s.RegisterService(&kubeapi.ActivityService_ServiceDesc, s.activityAddr); err != nil {
 		panic(err)
 	}
-	if err := s.RegisterService(&kubeapi.MailService_ServiceDesc, "mail:50056"); err != nil {
+	if err := s.RegisterService(&kubeapi.ItemService_ServiceDesc, s.itemAddr); err != nil {
 		panic(err)
 	}
-	if err := s.RegisterService(&kubeapi.GMService_ServiceDesc, "gm:50057"); err != nil {
+	if err := s.RegisterService(&kubeapi.MailService_ServiceDesc, s.mailAddr); err != nil {
 		panic(err)
 	}
+	if err := s.RegisterService(&kubeapi.GMService_ServiceDesc, s.gmAddr); err != nil {
+		panic(err)
+	}
+	s.nc = nc
+	s.universalClient = newUniversalClient(context.Background(), s.redisAddr)
 	return &s
 }
 
