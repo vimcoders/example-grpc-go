@@ -16,6 +16,6 @@ set IMAGE_ID=%BUILD_DATE%-%GIT_COMMIT%
 docker compose up -d mysql redis-1 redis-2 redis-3 redis-4 redis-5 redis-6 nats-1 nats-2 nats-3 redis-cluster-init
 docker compose up -d --build
 docker system prune -af --filter "until=24h"
-go test -bench . -cpu="1" -benchtime=1s -benchmem -count=1
+go test ./test/bench -bench . -cpu="1" -benchtime=1s -benchmem -count=1
 echo ✅ 启动完成！
 pause
