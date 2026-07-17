@@ -4,10 +4,19 @@ import (
 	"bytes"
 	"example/encoding"
 	"example/generated/kubeapi"
+	"io"
 	"net/http"
 	"testing"
-	"time"
 )
+
+func post(path string, body io.Reader) error {
+	resp, err := http.Post("http://localhost:16888"+path, "application/x-protobuf", body)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	return nil
+}
 
 func BenchmarkHTTPHello(b *testing.B) {
 	codec := encoding.GetCodec(encoding.Name())
@@ -16,10 +25,9 @@ func BenchmarkHTTPHello(b *testing.B) {
 		b.Error(err)
 		return
 	}
-	client := http.Client{Timeout: time.Second}
 	b.ResetTimer()
 	for b.Loop() {
-		if _, err := client.Post("http://127.0.0.1:16888"+kubeapi.BalanceService_Hello_FullMethodName, "application/x-protobuf", bytes.NewBuffer(req)); err != nil {
+		if err := post(kubeapi.BalanceService_Hello_FullMethodName, bytes.NewBuffer(req)); err != nil {
 			b.Error(err)
 		}
 	}
@@ -32,32 +40,26 @@ func BenchmarkHTTPChat(b *testing.B) {
 		b.Error(err)
 		return
 	}
-	client := http.Client{Timeout: time.Second}
 	b.ResetTimer()
 	for b.Loop() {
-		resp, err := client.Post("http://127.0.0.1:16888"+kubeapi.ChatService_Chat_FullMethodName, "application/x-protobuf", bytes.NewBuffer(req))
-		if err != nil {
+		if err := post(kubeapi.ChatService_Chat_FullMethodName, bytes.NewBuffer(req)); err != nil {
 			b.Error(err)
 		}
-		_ = resp.Body.Close()
 	}
 }
 
 func BenchmarkHTTPLogin(b *testing.B) {
 	codec := encoding.GetCodec(encoding.Name())
-	req, err := codec.Marshal(&kubeapi.LoginRequest{})
-	if err != nil {
-		b.Error(err)
-		return
-	}
-	client := http.Client{Timeout: time.Second}
 	b.ResetTimer()
 	for b.Loop() {
-		resp, err := client.Post("http://127.0.0.1:16888"+kubeapi.ProxyService_Login_FullMethodName, "application/x-protobuf", bytes.NewBuffer(req))
+		req, err := codec.Marshal(&kubeapi.LoginRequest{})
 		if err != nil {
 			b.Error(err)
+			return
 		}
-		_ = resp.Body.Close()
+		if err := post(kubeapi.ProxyService_Login_FullMethodName, bytes.NewBuffer(req)); err != nil {
+			b.Error(err)
+		}
 	}
 }
 
@@ -68,14 +70,11 @@ func BenchmarkHTTPGetFriends(b *testing.B) {
 		b.Error(err)
 		return
 	}
-	client := http.Client{Timeout: time.Second}
 	b.ResetTimer()
 	for b.Loop() {
-		resp, err := client.Post("http://127.0.0.1:16888"+kubeapi.SocialService_GetFriends_FullMethodName, "application/x-protobuf", bytes.NewBuffer(req))
-		if err != nil {
+		if err := post(kubeapi.SocialService_GetFriends_FullMethodName, bytes.NewBuffer(req)); err != nil {
 			b.Error(err)
 		}
-		_ = resp.Body.Close()
 	}
 }
 
@@ -86,14 +85,11 @@ func BenchmarkHTTPGetActivity(b *testing.B) {
 		b.Error(err)
 		return
 	}
-	client := http.Client{Timeout: time.Second}
 	b.ResetTimer()
 	for b.Loop() {
-		resp, err := client.Post("http://127.0.0.1:16888"+kubeapi.ActivityService_GetActivity_FullMethodName, "application/x-protobuf", bytes.NewBuffer(req))
-		if err != nil {
+		if err := post(kubeapi.ActivityService_GetActivity_FullMethodName, bytes.NewBuffer(req)); err != nil {
 			b.Error(err)
 		}
-		_ = resp.Body.Close()
 	}
 }
 
@@ -104,14 +100,11 @@ func BenchmarkHTTPGetMail(b *testing.B) {
 		b.Error(err)
 		return
 	}
-	client := http.Client{Timeout: time.Second}
 	b.ResetTimer()
 	for b.Loop() {
-		resp, err := client.Post("http://127.0.0.1:16888"+kubeapi.MailService_GetMail_FullMethodName, "application/x-protobuf", bytes.NewBuffer(req))
-		if err != nil {
+		if err := post(kubeapi.MailService_GetMail_FullMethodName, bytes.NewBuffer(req)); err != nil {
 			b.Error(err)
 		}
-		_ = resp.Body.Close()
 	}
 }
 
@@ -122,13 +115,10 @@ func BenchmarkHTTPDownload(b *testing.B) {
 		b.Error(err)
 		return
 	}
-	client := http.Client{Timeout: time.Second}
 	b.ResetTimer()
 	for b.Loop() {
-		resp, err := client.Post("http://127.0.0.1:16888"+kubeapi.ItemService_Download_FullMethodName, "application/x-protobuf", bytes.NewBuffer(req))
-		if err != nil {
+		if err := post(kubeapi.ItemService_Download_FullMethodName, bytes.NewBuffer(req)); err != nil {
 			b.Error(err)
 		}
-		_ = resp.Body.Close()
 	}
 }
