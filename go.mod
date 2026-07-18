@@ -5,6 +5,7 @@ go 1.26.5
 require (
 	github.com/nats-io/nats.go v1.52.0
 	github.com/redis/go-redis/v9 v9.21.0
+	github.com/sony/gobreaker/v2 v2.4.0
 	github.com/vimcoders/grpcx v1.2.8
 	google.golang.org/grpc v1.82.0
 	google.golang.org/protobuf v1.36.11

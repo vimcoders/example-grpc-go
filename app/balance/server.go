@@ -17,7 +17,9 @@ import (
 
 	"github.com/nats-io/nats.go"
 	"github.com/redis/go-redis/v9"
+	"github.com/sony/gobreaker/v2"
 	"github.com/vimcoders/grpcx"
+	"github.com/vimcoders/grpcx/generated/api"
 	"google.golang.org/grpc"
 )
 
@@ -222,9 +224,17 @@ func (s *Server) RegisterService(sd *grpc.ServiceDesc, endpoint string) error {
 	if err != nil {
 		return err
 	}
+	st := gobreaker.Settings{
+		Name: sd.ServiceName,
+		ReadyToTrip: func(counts gobreaker.Counts) bool {
+			failureRatio := float64(counts.TotalFailures) / float64(counts.Requests)
+			return counts.Requests >= 3 && failureRatio >= 0.6
+		},
+	}
 	s.endpoints = append(s.endpoints, RoundTripper{
 		sd:                  sd,
 		ClientConnInterface: cc,
+		cb:                  gobreaker.NewCircuitBreaker[*api.Response](st),
 	})
 	return nil
 }
