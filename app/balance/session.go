@@ -69,12 +69,12 @@ func (s *Session) RoundTrip(ctx context.Context, req *kubeapi.Request) (*kubeapi
 		}, nil
 	}
 	for _, v := range s.endpoints {
-		if ok := slices.ContainsFunc(v.sd.Methods, func(e grpc.MethodDesc) bool {
+		if ok := slices.ContainsFunc(v.Methods, func(e grpc.MethodDesc) bool {
 			return req.Method == e.MethodName
 		}); !ok {
 			continue
 		}
-		method := path.Join("/", v.sd.ServiceName, req.Method)
+		method := path.Join("/", v.ServiceName, req.Method)
 		reply, err := v.RoundTrip(ctx, &api.Request{
 			Method:  method,
 			Payload: req.Payload,
@@ -129,4 +129,16 @@ func (s *Session) Handle(ctx context.Context, c net.Conn) (err error) {
 			}
 		}
 	}
+}
+
+func (s *Session) Invoke(ctx context.Context, method string, args any, reply any, opts ...grpc.CallOption) error {
+	for i := range s.endpoints {
+		if ok := slices.ContainsFunc(s.endpoints[i].Methods, func(e grpc.MethodDesc) bool {
+			return path.Join("/", s.endpoints[i].ServiceName, e.MethodName) == method
+		}); !ok {
+			continue
+		}
+		return s.endpoints[i].Invoke(ctx, method, args, reply, opts...)
+	}
+	return status.Error(codes.NotFound, method)
 }

@@ -33,7 +33,7 @@ func main() {
 		{os.Getenv("MailService"), kubeapi.MailService_ServiceDesc},
 		{os.Getenv("GMService"), kubeapi.GMService_ServiceDesc},
 	} {
-		if err := s.RegisterService(&v.desc, v.endpoint); err != nil {
+		if err := s.RegisterService(v.desc, v.endpoint); err != nil {
 			panic(err)
 		}
 	}

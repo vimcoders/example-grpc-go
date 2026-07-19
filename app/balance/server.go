@@ -17,9 +17,7 @@ import (
 
 	"github.com/nats-io/nats.go"
 	"github.com/redis/go-redis/v9"
-	"github.com/sony/gobreaker/v2"
 	"github.com/vimcoders/grpcx"
-	"github.com/vimcoders/grpcx/generated/api"
 	"google.golang.org/grpc"
 )
 
@@ -217,24 +215,16 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // server. It is called from the IDL generated code. This must be called before
 // invoking Serve. If ss is non-nil (for legacy code), its type is checked to
 // ensure it implements sd.HandlerType.
-func (s *Server) RegisterService(sd *grpc.ServiceDesc, endpoint string) error {
+func (s *Server) RegisterService(sd grpc.ServiceDesc, endpoint string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	cc, err := grpcx.DialContext(ctx, endpoint)
 	if err != nil {
 		return err
 	}
-	st := gobreaker.Settings{
-		Name: sd.ServiceName,
-		ReadyToTrip: func(counts gobreaker.Counts) bool {
-			failureRatio := float64(counts.TotalFailures) / float64(counts.Requests)
-			return counts.Requests >= 3 && failureRatio >= 0.6
-		},
-	}
 	s.endpoints = append(s.endpoints, RoundTripper{
-		sd:                  sd,
+		ServiceDesc:         sd,
 		ClientConnInterface: cc,
-		cb:                  gobreaker.NewCircuitBreaker[*api.Response](st),
 	})
 	return nil
 }
