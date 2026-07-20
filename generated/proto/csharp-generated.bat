@@ -1,0 +1,1 @@
+%GOPATH%\protoc-35.1-win64\bin\protoc --proto_path=%~dp0 --csharp_out=%~dp0..\kubeapi %~dp0*.proto

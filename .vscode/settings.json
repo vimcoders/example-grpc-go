@@ -7,7 +7,7 @@
       "match": "\\.proto$",
       "event": "onFileChange",
       "isAsync": false,
-      "cmd": "${fileDirname}\\buf-generated.bat"
+      "cmd": "${fileDirname}\\golang-generated.bat"
     }
   ]
 }
