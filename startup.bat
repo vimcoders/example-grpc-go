@@ -13,7 +13,6 @@ go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
 echo 📦 安装 gRPC 代码生成工具
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest
 echo ✨ 安装Protobuf格式化工具
 go install github.com/bufbuild/buf/cmd/buf@latest
 echo 🎨 执行代码自动格式化与规范检测

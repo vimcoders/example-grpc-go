@@ -118,9 +118,9 @@ const file_chat_proto_rawDesc = "" +
 	"\vChatRequest\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage\"(\n" +
 	"\fChatResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage2B\n" +
-	"\vChatService\x123\n" +
-	"\x04Chat\x12\x14.kubeapi.ChatRequest\x1a\x15.kubeapi.ChatResponseB\fZ\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage2D\n" +
+	"\vChatService\x125\n" +
+	"\x04Chat\x12\x14.kubeapi.ChatRequest\x1a\x15.kubeapi.ChatResponse\"\x00B\fZ\n" +
 	"./;kubeapib\x06proto3"
 
 var (

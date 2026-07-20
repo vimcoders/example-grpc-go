@@ -1,7 +1,6 @@
 {
   "protobuf.includes": [
     "${workspaceFolder}/generated/proto",
-    "${workspaceFolder}/generated/protoc-35.1-win64/include"
   ],
   "filewatcher.commands": [
     {
