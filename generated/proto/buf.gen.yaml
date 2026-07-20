@@ -1,0 +1,8 @@
+version: v2
+inputs:
+  - directory: .
+plugins:
+  - local: protoc-gen-go
+    out: ../kubeapi
+  - local: protoc-gen-go-grpc
+    out: ../kubeapi
