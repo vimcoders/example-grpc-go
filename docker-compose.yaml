@@ -323,6 +323,7 @@ services:
   redis-2:
     image: redis:latest
     container_name: redis-2  # 自定义容器名称
+    restart: unless-stopped
     networks:
       - example
     command: >
@@ -341,6 +342,7 @@ services:
   redis-3:
     image: redis:latest
     container_name: redis-3  # 自定义容器名称
+    restart: unless-stopped
     networks:
       - example
     command: >
@@ -359,6 +361,7 @@ services:
   redis-4:
     image: redis:latest
     container_name: redis-4  # 自定义容器名称
+    restart: unless-stopped
     networks:
       - example
     command: >
@@ -377,6 +380,7 @@ services:
   redis-5:
     image: redis:latest
     container_name: redis-5  # 自定义容器名称
+    restart: unless-stopped
     networks:
       - example
     command: >
@@ -395,6 +399,7 @@ services:
   redis-6:
     image: redis:latest
     container_name: redis-6  # 自定义容器名称
+    restart: unless-stopped
     networks:
       - example
     command: >
