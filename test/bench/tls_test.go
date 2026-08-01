@@ -15,7 +15,7 @@ import (
 
 func newTLSChannel() *channel {
 	for range math.MaxInt8 {
-		c, err := tls.Dial("tcp", "localhost:56888", &tls.Config{InsecureSkipVerify: true})
+		c, err := tls.Dial("tcp", "localhost:46888", &tls.Config{InsecureSkipVerify: true})
 		if err != nil {
 			slog.Error(err.Error())
 			continue

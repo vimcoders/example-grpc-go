@@ -16,10 +16,13 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	s := grpcx.NewServer()
 	s.RegisterService(&kubeapi.ActivityService_ServiceDesc, &activity.Handler{})
+	port := os.Getenv("Port")
 	go func() {
 		defer stop()
-		s.ListenAndServe(context.Background(), os.Getenv("Port"))
+		if err := s.ListenAndServe(context.Background(), port); err != nil {
+			slog.Error("ListenAndServe", "Port", port)
+		}
 	}()
-	slog.Info("running...")
+	slog.Info("running...", "Port", port)
 	<-ctx.Done()
 }

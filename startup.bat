@@ -22,10 +22,17 @@ for /f "delims=" %%a in ('powershell Get-Date -Format "yyyy-MM-dd"') do set BUIL
 for /f "delims=" %%i in ('git rev-parse --short HEAD') do set GIT_COMMIT=%%i
 set IMAGE_ID=%BUILD_DATE%-%GIT_COMMIT%
 echo 🐳 启动中间件集群(Mysql/Redis/Nats)
-docker compose up -d mysql redis-1 redis-2 redis-3 redis-4 redis-5 redis-6 nats-1 nats-2 nats-3 redis-cluster-init
+docker compose down -v
+docker compose up -d redis-1 redis-2 redis-3 redis-4 redis-5 redis-6 
+docker compose up -d nats-1 nats-2 nats-3 
+docker compose up -d redis-cluster-init
+docker compose up -d mysql
+@REM docker compose up -d mysql-1 mysql-2 mysql-3 mysql-cluster-init
+@REM docker compose up -d mysql-router
+
 echo 🐳 构建并启动业务服务容器
 docker compose up -d --build
-docker system prune -af --filter "until=24h"
+docker system prune -a
 echo ⚡ 执行基准性能压测
 go test ./test/bench -bench . -cpu="1" -benchtime=1s -benchmem -count=1
 echo ✅ 全部开发环境初始化完毕

@@ -16,10 +16,12 @@ import (
 )
 
 func main() {
+	redisService, natsService := os.Getenv("RedisService"), os.Getenv("NatsService")
+	slog.Info("NewServer", "redis", redisService, "nats", natsService)
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	s := balance.NewServer(
-		balance.WithRedisService(os.Getenv("RedisService")),
-		balance.WithNatsService(os.Getenv("NatsService")),
+		balance.WithRedisService(redisService),
+		balance.WithNatsService(natsService),
 	)
 	for _, v := range []struct {
 		endpoint string
@@ -33,23 +35,31 @@ func main() {
 		{os.Getenv("MailService"), kubeapi.MailService_ServiceDesc},
 		{os.Getenv("GMService"), kubeapi.GMService_ServiceDesc},
 	} {
+		slog.Info("RegisterService", "endpoint", v.endpoint)
 		if err := s.RegisterService(v.desc, v.endpoint); err != nil {
 			panic(err)
 		}
 	}
 	if e := os.Getenv("TCPPort"); len(e) > 0 {
+		slog.Info("TCP", "Port", e)
 		go func() {
 			defer stop()
-			_ = s.ListenAndServe(ctx, e)
+			if err := s.ListenAndServe(ctx, e); err != nil {
+				slog.Error("ListenAndServe", "stop", err)
+			}
 		}()
 	}
 	if e := os.Getenv("TLSPort"); len(e) > 0 {
+		slog.Info("TLSPort", "Port", e)
 		go func() {
 			defer stop()
-			_ = s.ListenAndServeTLS(ctx, e)
+			if err := s.ListenAndServeTLS(ctx, e); err != nil {
+				slog.Error("ListenAndServeTLS", "stop", err)
+			}
 		}()
 	}
 	if e := os.Getenv("HTTPPort"); len(e) > 0 {
+		slog.Info("HTTPPort", "Port", e)
 		svr := &http.Server{
 			Addr:           e,
 			Handler:        s,
@@ -60,7 +70,9 @@ func main() {
 		}
 		go func() {
 			defer stop()
-			_ = svr.ListenAndServe()
+			if err := svr.ListenAndServe(); err != nil {
+				slog.Error("http ListenAndServe", "stop", err)
+			}
 			svr.Shutdown(ctx)
 		}()
 	}

@@ -9,18 +9,18 @@ services:
       - example  # 加入私有网络
     environment:
       MYSQL: ${MYSQL_DSN}
-      ChatService: ${Chat_Service}
-      SocialService: ${Social_Service}
-      ProxyService: ${Proxy_Service}
-      ActivityService: ${Activity_Service}
-      ItemService: ${Item_Service}
-      MailService: ${Mail_Service}
-      GMService: ${GM_Service}
+      ProxyService: Proxy:50051
+      SocialService: Social:50052
+      ChatService: Chat:50053
+      ActivityService: Activity:50054
+      ItemService: Item:50055
+      MailService: Mail:50056
+      GMService: GM:50057
       RedisService: ${Redis_Service}
       NatsService: ${Nats_Service}
-      TLSPort: ${Balance_TLS_Port}
-      TCPPort: ${Balance_TCP_Port}
-      HTTPPort: ${Balance_HTTP_Port}
+      TLSPort: :46888
+      TCPPort: :26888
+      HTTPPort: :16888
     depends_on:
       redis-1: { condition: service_healthy }
       redis-2: { condition: service_healthy }
@@ -35,7 +35,7 @@ services:
     ports:
       - "16888:16888"
       - "26888:26888"
-      - "56888:56888"
+      - "46888:46888"
 
   proxy:
     build:
@@ -47,7 +47,7 @@ services:
       - example  # 加入私有网络
     environment:
       MYSQL: ${MYSQL_DSN}
-      Port: ${Proxy_Port}
+      Port: :50051
     depends_on:
       redis-1: { condition: service_healthy }
       redis-2: { condition: service_healthy }
@@ -59,6 +59,7 @@ services:
       nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
+
   social:
     build:
       dockerfile: cmd/social/Dockerfile
@@ -69,7 +70,7 @@ services:
       - example  # 加入私有网络
     environment:
       MYSQL: ${MYSQL_DSN}
-      Port: ${Social_Port}
+      Port: :50052
     depends_on:
       redis-1: { condition: service_healthy }
       redis-2: { condition: service_healthy }
@@ -81,6 +82,7 @@ services:
       nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
+
   chat:
     build:
       dockerfile: cmd/chat/Dockerfile
@@ -91,7 +93,7 @@ services:
       - example  # 加入私有网络
     environment:
       MYSQL: ${MYSQL_DSN}
-      Port: ${Chat_Port}
+      Port: :50053
     depends_on:
       redis-1: { condition: service_healthy }
       redis-2: { condition: service_healthy }
@@ -103,6 +105,7 @@ services:
       nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
+
   activity:
     build:
       dockerfile: cmd/activity/Dockerfile
@@ -113,7 +116,7 @@ services:
       - example  # 加入私有网络
     environment:
       MYSQL: ${MYSQL_DSN}
-      Port: ${Activity_Port}
+      Port: :50054
     depends_on:
       redis-1: { condition: service_healthy }
       redis-2: { condition: service_healthy }
@@ -125,6 +128,7 @@ services:
       nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
+
   item:
     build:
       dockerfile: cmd/item/Dockerfile
@@ -135,7 +139,7 @@ services:
       - example  # 加入私有网络
     environment:
       MYSQL: ${MYSQL_DSN}
-      Port: ${Item_Port}
+      Port: :50055
     depends_on:
       redis-1: { condition: service_healthy }
       redis-2: { condition: service_healthy }
@@ -147,6 +151,7 @@ services:
       nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
+
   mail:
     build:
       dockerfile: cmd/mail/Dockerfile
@@ -157,7 +162,7 @@ services:
       - example  # 加入私有网络
     environment:
       MYSQL: ${MYSQL_DSN}
-      Port: ${Mail_Port}
+      Port: :50056
     depends_on:
       redis-1: { condition: service_healthy }
       redis-2: { condition: service_healthy }
@@ -169,6 +174,7 @@ services:
       nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
+
   gm:
     build:
       dockerfile: cmd/gm/Dockerfile
@@ -179,7 +185,7 @@ services:
       - example  # 加入私有网络
     environment:
       MYSQL: ${MYSQL_DSN}
-      Port: ${GM_Port}
+      Port: :50057
     depends_on:
       redis-1: { condition: service_healthy }
       redis-2: { condition: service_healthy }
@@ -191,6 +197,7 @@ services:
       nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
+
   mysql:
     image: mysql:latest
     container_name: mysql
@@ -210,6 +217,7 @@ services:
       timeout: 5s         # 单次检查超时时间
       retries: 10         # 最多重试10次（总计约50秒）
       start_period: 15s   # 启动后15秒内不检查（预留初始化时间）
+
   nats-1:
     image: nats:latest
     container_name: nats-1
@@ -425,6 +433,122 @@ services:
         redis-cli -h redis-6 CLUSTER RESET HARD
         redis-cli --cluster create redis-1:6379 redis-2:6379 redis-3:6379 redis-4:6379 redis-5:6379 redis-6:6379 --cluster-replicas 1 --cluster-yes
     restart: "no"
+
+  mysql-1:
+    image: mysql:8.0.40
+    container_name: mysql-1
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: Root@123456
+      MYSQL_ROOT_HOST: "%"
+    command:
+      - --server-id=1
+      - --report-host=mysql-1
+      - --log-bin=mysql-bin
+      - --binlog_format=ROW
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+      - --sync_binlog=1
+      - --transaction-write-set-extraction=XXHASH64
+      - --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-S", "/var/run/mysqld/mysqld.sock", "-uroot", "-pRoot@123456"]
+      interval: 8s
+      timeout: 5s
+      retries: 8
+    networks:
+      - example
+
+  mysql-2:
+    image: mysql:8.0.40
+    container_name: mysql-2
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: Root@123456
+      MYSQL_ROOT_HOST: "%"
+    command:
+      - --server-id=2
+      - --report-host=mysql-2
+      - --log-bin=mysql-bin
+      - --binlog_format=ROW
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+      - --sync_binlog=1
+      - --transaction-write-set-extraction=XXHASH64
+      - --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-S", "/var/run/mysqld/mysqld.sock", "-uroot", "-pRoot@123456"]
+      interval: 8s
+      timeout: 5s
+      retries: 8
+    networks:
+      - example
+
+  mysql-3:
+    image: mysql:8.0.40
+    container_name: mysql-3
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: Root@123456
+      MYSQL_ROOT_HOST: "%"
+    command:
+      - --server-id=3
+      - --report-host=mysql-3
+      - --log-bin=mysql-bin
+      - --binlog_format=ROW
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+      - --sync_binlog=1
+      - --transaction-write-set-extraction=XXHASH64
+      - --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-S", "/var/run/mysqld/mysqld.sock", "-uroot", "-pRoot@123456"]
+      interval: 8s
+      timeout: 5s
+      retries: 8
+    networks:
+      - example
+
+  # MySQL Router：应用接入层
+  mysql-router:
+    image: mysql/mysql-router:latest
+    container_name: mysql-router
+    restart: unless-stopped
+    depends_on:
+      mysql-1:
+        condition: service_healthy
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_HOST: mysql-1
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: Root@123456
+    ports:
+      - "6446:6446"   # RW读写端口，自动路由主节点
+      - "6447:6447"   # RO只读端口，负载均衡至副本
+    networks:
+      - example
+
+  mysql-cluster-init:
+    image: mysql:8.0.40
+    container_name: mysql-cluster-init
+    depends_on:
+      mysql-1:
+        condition: service_healthy
+      mysql-2:
+        condition: service_healthy
+      mysql-3:
+        condition: service_healthy
+    volumes:
+      - ./bootstrap.js:/bootstrap.js:ro
+    command: bash -c "set -euo pipefail; mysqlsh root@mysql-1:3306 -pRoot@123456 --js -f /bootstrap.js"
+    restart: "no"
+    networks:
+      - example
+
 networks:
   example:
     driver: bridge  # 使用桥接驱动，默认选项
