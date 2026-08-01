@@ -32,6 +32,7 @@ docker compose up -d mysql-1 mysql-2 mysql-3 mysql-cluster-init mysql-router
 
 echo 🐳 构建并启动业务服务容器
 docker compose up -d --build
+docker image prune --filter until=168h -f
 docker builder prune -a
 echo ⚡ 执行基准性能压测
 go test ./test/bench -bench . -cpu="1" -benchtime=1s -benchmem -count=1

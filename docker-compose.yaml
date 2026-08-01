@@ -304,6 +304,7 @@ services:
   redis-1:
     image: redis:latest
     container_name: redis-1  # 自定义容器名称
+    restart: unless-stopped
     networks:
       - example
     command: >
