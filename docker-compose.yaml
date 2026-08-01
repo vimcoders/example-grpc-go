@@ -22,13 +22,8 @@ services:
       TCPPort: :26888
       HTTPPort: :16888
     depends_on:
-      redis-1: { condition: service_healthy }
-      redis-2: { condition: service_healthy }
-      redis-3: { condition: service_healthy }
-      redis-4: { condition: service_healthy }
-      redis-5: { condition: service_healthy }
-      redis-6: { condition: service_healthy }
-      mysql: { condition: service_healthy }  # 等待 mysql 健康后再启动
+      redis-cluster-init: { condition: service_completed_successfully }
+      mysql-router: { condition: service_healthy }  # 等待 mysql 健康后再启动
       nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
@@ -49,13 +44,8 @@ services:
       MYSQL: ${MYSQL_DSN}
       Port: :50051
     depends_on:
-      redis-1: { condition: service_healthy }
-      redis-2: { condition: service_healthy }
-      redis-3: { condition: service_healthy }
-      redis-4: { condition: service_healthy }
-      redis-5: { condition: service_healthy }
-      redis-6: { condition: service_healthy }
-      mysql: { condition: service_healthy }  # 等待 mysql 健康后再启动
+      redis-cluster-init: { condition: service_completed_successfully }
+      mysql-router: { condition: service_healthy }  # 等待 mysql 健康后再启动
       nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
@@ -72,13 +62,8 @@ services:
       MYSQL: ${MYSQL_DSN}
       Port: :50052
     depends_on:
-      redis-1: { condition: service_healthy }
-      redis-2: { condition: service_healthy }
-      redis-3: { condition: service_healthy }
-      redis-4: { condition: service_healthy }
-      redis-5: { condition: service_healthy }
-      redis-6: { condition: service_healthy }
-      mysql: { condition: service_healthy }  # 等待 mysql 健康后再启动
+      redis-cluster-init: { condition: service_completed_successfully }
+      mysql-router: { condition: service_healthy }  # 等待 mysql 健康后再启动
       nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
@@ -95,13 +80,8 @@ services:
       MYSQL: ${MYSQL_DSN}
       Port: :50053
     depends_on:
-      redis-1: { condition: service_healthy }
-      redis-2: { condition: service_healthy }
-      redis-3: { condition: service_healthy }
-      redis-4: { condition: service_healthy }
-      redis-5: { condition: service_healthy }
-      redis-6: { condition: service_healthy }
-      mysql: { condition: service_healthy }  # 等待 mysql 健康后再启动
+      redis-cluster-init: { condition: service_completed_successfully }
+      mysql-router: { condition: service_healthy }  # 等待 mysql 健康后再启动
       nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
@@ -118,13 +98,8 @@ services:
       MYSQL: ${MYSQL_DSN}
       Port: :50054
     depends_on:
-      redis-1: { condition: service_healthy }
-      redis-2: { condition: service_healthy }
-      redis-3: { condition: service_healthy }
-      redis-4: { condition: service_healthy }
-      redis-5: { condition: service_healthy }
-      redis-6: { condition: service_healthy }
-      mysql: { condition: service_healthy }  # 等待 mysql 健康后再启动
+      redis-cluster-init: { condition: service_completed_successfully }
+      mysql-router: { condition: service_healthy }  # 等待 mysql 健康后再启动
       nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
@@ -141,13 +116,8 @@ services:
       MYSQL: ${MYSQL_DSN}
       Port: :50055
     depends_on:
-      redis-1: { condition: service_healthy }
-      redis-2: { condition: service_healthy }
-      redis-3: { condition: service_healthy }
-      redis-4: { condition: service_healthy }
-      redis-5: { condition: service_healthy }
-      redis-6: { condition: service_healthy }
-      mysql: { condition: service_healthy }  # 等待 mysql 健康后再启动
+      redis-cluster-init: { condition: service_completed_successfully }
+      mysql-router: { condition: service_healthy }  # 等待 mysql 健康后再启动
       nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
@@ -164,13 +134,8 @@ services:
       MYSQL: ${MYSQL_DSN}
       Port: :50056
     depends_on:
-      redis-1: { condition: service_healthy }
-      redis-2: { condition: service_healthy }
-      redis-3: { condition: service_healthy }
-      redis-4: { condition: service_healthy }
-      redis-5: { condition: service_healthy }
-      redis-6: { condition: service_healthy }
-      mysql: { condition: service_healthy }  # 等待 mysql 健康后再启动
+      redis-cluster-init: { condition: service_completed_successfully }
+      mysql-router: { condition: service_healthy }  # 等待 mysql 健康后再启动
       nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
@@ -187,13 +152,8 @@ services:
       MYSQL: ${MYSQL_DSN}
       Port: :50057
     depends_on:
-      redis-1: { condition: service_healthy }
-      redis-2: { condition: service_healthy }
-      redis-3: { condition: service_healthy }
-      redis-4: { condition: service_healthy }
-      redis-5: { condition: service_healthy }
-      redis-6: { condition: service_healthy }
-      mysql: { condition: service_healthy }  # 等待 mysql 健康后再启动
+      redis-cluster-init: { condition: service_completed_successfully }
+      mysql-router: { condition: service_healthy }  # 等待 mysql 健康后再启动
       nats-1: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-2: { condition: service_healthy } # 等待 nats 健康后再启动
       nats-3: { condition: service_healthy } # 等待 nats 健康后再启动
@@ -446,6 +406,9 @@ services:
     restart: unless-stopped
     environment:
       TZ: Asia/Shanghai
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: Root@123456
       MYSQL_ROOT_HOST: "%"
     command:
@@ -472,6 +435,9 @@ services:
     restart: unless-stopped
     environment:
       TZ: Asia/Shanghai
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: Root@123456
       MYSQL_ROOT_HOST: "%"
     command:
@@ -498,6 +464,9 @@ services:
     restart: unless-stopped
     environment:
       TZ: Asia/Shanghai
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: Root@123456
       MYSQL_ROOT_HOST: "%"
     command:
@@ -537,6 +506,13 @@ services:
       - "6447:6447"   # RO只读端口，负载均衡至副本
     networks:
       - example
+    healthcheck:
+      test: >
+        bash -c 'mysql -h 127.0.0.1 -P 6446 -uroot -pRoot@123456 -e "SELECT 1"'
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
   mysql-cluster-init:
     image: mysql:8.0.40
@@ -549,7 +525,7 @@ services:
       mysql-3:
         condition: service_healthy
     volumes:
-      - ./bootstrap.js:/bootstrap.js:ro
+      - ./scripts/bootstrap.js:/bootstrap.js:ro
     command: bash -c "set -euo pipefail; mysqlsh root@mysql-1:3306 -pRoot@123456 --js -f /bootstrap.js"
     restart: "no"
     networks:
@@ -599,7 +575,7 @@ services:
       - mongo-2
       - mongo-3
     volumes:
-      - ./mongo-cluster.sh:/mongo-cluster.sh
+      - ./scripts/mongo-cluster.sh:/mongo-cluster.sh
     command: bash /mongo-cluster.sh
     networks:
       - example
