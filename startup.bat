@@ -27,12 +27,12 @@ docker compose up -d redis-1 redis-2 redis-3 redis-4 redis-5 redis-6
 docker compose up -d nats-1 nats-2 nats-3 
 docker compose up -d redis-cluster-init
 docker compose up -d mysql
-@REM docker compose up -d mysql-1 mysql-2 mysql-3 mysql-cluster-init
-@REM docker compose up -d mysql-router
+docker compose up -d mongo-1 mongo-2 mongo-3 mongo-cluster-init
+docker compose up -d mysql-1 mysql-2 mysql-3 mysql-cluster-init mysql-router
 
 echo 🐳 构建并启动业务服务容器
 docker compose up -d --build
-docker system prune -a
+docker builder prune -a
 echo ⚡ 执行基准性能压测
 go test ./test/bench -bench . -cpu="1" -benchtime=1s -benchmem -count=1
 echo ✅ 全部开发环境初始化完毕
