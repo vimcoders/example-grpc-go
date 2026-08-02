@@ -17,21 +17,23 @@ cd example-grpc-go
 ### 2. 启动服务
 
 ```bash
-docker compose up -d
+startup.bat
 ```
 
 启动的服务：
-- `balance` 网关，tcp端口 `:26888`,http端口 `:36888`
-- `chat` 微服务，端口 `:50051`
+- `balance` 网关，tcp端口 `:26888`,http端口 `:16888` tls端口 `:46888`
+- `Proxy`微服务，端口 `:50051`
+- `Social`微服务，端口 `:50052`
+- `Chat`微服务，端口 `:50053`
+- `Activity`微服务，端口 `:50054`
+- `Item`微服务，端口 `:50055`
+- `Mail`微服务，端口 `:50056`
 - `mysql`集群、`redis`集群、`nats`集群、mongo集群等基础设施
 
 ### 3. 压测
 
 ```bash
-go test -bench "^BenchmarkTCPHello$" -cpu="1" -benchtime=1s -benchmem -count=1
-go test -bench "^BenchmarkTCPChat$" -cpu="1" -benchtime=1s -benchmem -count=1
-go test -bench "^BenchmarkHTTPHello$" -cpu="1" -benchtime=1s -benchmem -count=1
-go test -bench "^BenchmarkHTTPChat$" -cpu="1" -benchtime=1s -benchmem -count=1
+go test ./bench/balance -bench . -cpu="1" -benchtime=1s -benchmem -count=1
 ```
 
 ## 项目结构
@@ -81,7 +83,7 @@ server.ListenAndServe(ctx, ":26888")
 
 ### chat（微服务）
 
-标准 grpcx 服务：
+标准 grpc 服务：
 
 ```go
 server := grpcx.NewServer()
