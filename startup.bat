@@ -21,15 +21,14 @@ golangci-lint run --fix ./...
 for /f "delims=" %%a in ('powershell Get-Date -Format "yyyy-MM-dd"') do set BUILD_DATE=%%a
 for /f "delims=" %%i in ('git rev-parse --short HEAD') do set GIT_COMMIT=%%i
 set IMAGE_ID=%BUILD_DATE%-%GIT_COMMIT%
-echo 🐳 启动中间件集群(Mysql/Redis/Nats/mongo)
-docker compose down -v
-docker compose up -d redis-1 redis-2 redis-3 redis-4 redis-5 redis-6 redis-cluster-init
-docker compose up -d nats-1 nats-2 nats-3 
-docker compose up -d mongo-1 mongo-2 mongo-3 mongo-cluster-init
-docker compose up -d mysql-1 mysql-2 mysql-3 mysql-cluster-init mysql-router
-
-echo 🐳 构建并启动业务服务容器
-docker compose up -d --build
+docker pull container-registry.oracle.com/mysql/community-server:8.4.9 
+docker pull container-registry.oracle.com/mysql/community-router:8.4.9 
+docker pull nats:latest 
+docker pull redis:latest 
+docker pull mongo:latest
+docker compose -f redis-cluster.yaml -f nats-cluster.yaml -f mysql-cluster.yaml -f mongo-cluster.yaml -f business.yaml down -v
+echo 🐳 启动中间件集群(mysql/redis/nats/mongo) 并启动业务服务容器
+docker compose -f redis-cluster.yaml -f nats-cluster.yaml -f mongo-cluster.yaml -f mysql-cluster.yaml -f business.yaml up -d
 docker image prune --filter until=168h -f
 docker builder prune -a
 echo ⚡ 执行基准性能压测

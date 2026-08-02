@@ -1,0 +1,75 @@
+services:
+  mongo-1:
+    image: mongo:latest
+    container_name: mongo-1
+    restart: unless-stopped
+    command:
+      - mongod
+      - --replSet
+      - rs0
+      - --bind_ip_all
+    networks:
+      - example
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 8s
+      timeout: 5s
+      retries: 8
+      start_period: 15s
+
+  mongo-2:
+    image: mongo:latest
+    container_name: mongo-2
+    restart: unless-stopped
+    command:
+      - mongod
+      - --replSet
+      - rs0
+      - --bind_ip_all
+    networks:
+      - example
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 8s
+      timeout: 5s
+      retries: 8
+      start_period: 15s
+
+  mongo-3:
+    image: mongo:latest
+    container_name: mongo-3
+    restart: unless-stopped
+    command:
+      - mongod
+      - --replSet
+      - rs0
+      - --bind_ip_all
+    networks:
+      - example
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 8s
+      timeout: 5s
+      retries: 8
+      start_period: 15s
+
+  mongo-cluster-init:
+    image: mongo:latest
+    container_name: mongo-cluster-init
+    depends_on:
+      mongo-1: { condition: service_healthy }
+      mongo-2: { condition: service_healthy }
+      mongo-3: { condition: service_healthy }
+    volumes:
+      - ./scripts/mongo-cluster.sh:/mongo-cluster.sh
+    entrypoint:
+      - sh
+      - -c
+      - |
+        /mongo-cluster.sh
+    networks:
+      - example
+
+networks:
+  example:
+    driver: bridge  # 使用桥接驱动，默认选项

@@ -16,10 +16,10 @@ type Account struct {
 
 func initDB() *gorm.DB {
 	// 主库（写）：走 6446，自动指向 Primary
-	writeDSN := "root:Root@123456@tcp(127.0.0.1:6446)/fishes?charset=utf8mb4"
+	writeDSN := "develop:develop@tcp(127.0.0.1:6446)/example?charset=utf8mb4"
 
 	// 从库（读）：走 6447，自动负载到 mysql-2 / mysql-3
-	readDSN := "root:Root@123456@tcp(127.0.0.1:6447)/fishes?charset=utf8mb4"
+	readDSN := "develop:develop@tcp(127.0.0.1:6447)/example?charset=utf8mb4"
 
 	db, err := gorm.Open(mysql.Open(writeDSN), &gorm.Config{})
 	if err != nil {

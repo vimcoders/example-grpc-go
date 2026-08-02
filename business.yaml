@@ -1,0 +1,115 @@
+services:
+  balance:
+    build:
+      dockerfile: cmd/balance/Dockerfile
+    image: ${REGISTRY_URL}/balance:${IMAGE_ID}
+    container_name: balance  # 自定义容器名称
+    restart: always
+    networks:
+      - example  # 加入私有网络
+    environment:
+      MYSQL: ${MYSQL_DSN}
+      ProxyService: Proxy:50051
+      SocialService: Social:50052
+      ChatService: Chat:50053
+      ActivityService: Activity:50054
+      ItemService: Item:50055
+      MailService: Mail:50056
+      GMService: GM:50057
+      RedisService: ${Redis_Service}
+      NatsService: ${Nats_Service}
+      TLSPort: :46888
+      TCPPort: :26888
+      HTTPPort: :16888
+    ports:
+      - "16888:16888"
+      - "26888:26888"
+      - "46888:46888"
+
+  proxy:
+    build:
+      dockerfile: cmd/proxy/Dockerfile
+    image: ${REGISTRY_URL}/proxy:${IMAGE_ID}
+    container_name: proxy  # 自定义容器名称
+    restart: always
+    networks:
+      - example  # 加入私有网络
+    environment:
+      MYSQL: ${MYSQL_DSN}
+      Port: :50051
+
+  social:
+    build:
+      dockerfile: cmd/social/Dockerfile
+    image: ${REGISTRY_URL}/social:${IMAGE_ID}
+    container_name: social  # 自定义容器名称
+    restart: always
+    networks:
+      - example  # 加入私有网络
+    environment:
+      MYSQL: ${MYSQL_DSN}
+      Port: :50052
+
+  chat:
+    build:
+      dockerfile: cmd/chat/Dockerfile
+    image: ${REGISTRY_URL}/chat:${IMAGE_ID}
+    container_name: chat  # 自定义容器名称
+    restart: always
+    networks:
+      - example  # 加入私有网络
+    environment:
+      MYSQL: ${MYSQL_DSN}
+      Port: :50053
+
+  activity:
+    build:
+      dockerfile: cmd/activity/Dockerfile
+    image: ${REGISTRY_URL}/activity:${IMAGE_ID}
+    container_name: activity  # 自定义容器名称
+    restart: always
+    networks:
+      - example  # 加入私有网络
+    environment:
+      MYSQL: ${MYSQL_DSN}
+      Port: :50054
+
+  item:
+    build:
+      dockerfile: cmd/item/Dockerfile
+    image: ${REGISTRY_URL}/item:${IMAGE_ID}
+    container_name: item  # 自定义容器名称
+    restart: always
+    networks:
+      - example  # 加入私有网络
+    environment:
+      MYSQL: ${MYSQL_DSN}
+      Port: :50055
+
+  mail:
+    build:
+      dockerfile: cmd/mail/Dockerfile
+    image: ${REGISTRY_URL}/mail:${IMAGE_ID}
+    container_name: mail  # 自定义容器名称
+    restart: always
+    networks:
+      - example  # 加入私有网络
+    environment:
+      MYSQL: ${MYSQL_DSN}
+      Port: :50056
+
+  gm:
+    build:
+      dockerfile: cmd/gm/Dockerfile
+    image: ${REGISTRY_URL}/gm:${IMAGE_ID}
+    container_name: gm  # 自定义容器名称
+    restart: always
+    networks:
+      - example  # 加入私有网络
+    environment:
+      MYSQL: ${MYSQL_DSN}
+      Port: :50057
+
+networks:
+  example:
+    driver: bridge  # 使用桥接驱动，默认选项

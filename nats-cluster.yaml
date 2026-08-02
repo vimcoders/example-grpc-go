@@ -1,0 +1,88 @@
+services:
+  nats-1:
+    image: nats:latest
+    container_name: nats-1
+    command:
+      - "--name"
+      - "nats-1"
+      - "--cluster_name"
+      - "nats-cluster"
+      - "--cluster"
+      - "nats://0.0.0.0:6222"
+      - "--cluster_advertise"
+      - "nats-1:6222"
+      - "--routes"
+      - "nats://nats-1:6222,nats://nats-2:6222,nats://nats-3:6222"
+      - "--http_port"
+      - "8222"
+      - "--port"
+      - "4222"
+    networks:
+      - example
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "nats-server", "--check"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  nats-2:
+    image: nats:latest
+    container_name: nats-2
+    command:
+      - "--name"
+      - "nats-2"
+      - "--cluster_name"
+      - "nats-cluster"
+      - "--cluster"
+      - "nats://0.0.0.0:6222"
+      - "--cluster_advertise"
+      - "nats-2:6222"
+      - "--routes"
+      - "nats://nats-1:6222,nats://nats-2:6222,nats://nats-3:6222"
+      - "--http_port"
+      - "8222"
+      - "--port"
+      - "4222"
+    networks:
+      - example
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "nats-server", "--check"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  nats-3:
+    image: nats:latest
+    container_name: nats-3
+    command:
+      - "--name"
+      - "nats-3"
+      - "--cluster_name"
+      - "nats-cluster"
+      - "--cluster"
+      - "nats://0.0.0.0:6222"
+      - "--cluster_advertise"
+      - "nats-3:6222"
+      - "--routes"
+      - "nats://nats-1:6222,nats://nats-2:6222,nats://nats-3:6222"
+      - "--http_port"
+      - "8222"
+      - "--port"
+      - "4222"
+    networks:
+      - example
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "nats-server", "--check"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s    
+
+networks:
+  example:
+    driver: bridge  # 使用桥接驱动，默认选项

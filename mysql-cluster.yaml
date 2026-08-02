@@ -1,0 +1,132 @@
+services:
+  mysql-1:
+    image: container-registry.oracle.com/mysql/community-server:8.4.9
+    container_name: mysql-1
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_HOST: "%"
+    command:
+      - --server-id=1
+      - --report-host=mysql-1
+      - --log-bin=mysql-bin
+      - --binlog_format=ROW
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+      - --sync_binlog=1
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 8s
+      timeout: 5s
+      retries: 8
+    networks:
+      - example
+
+  mysql-2:
+    image: container-registry.oracle.com/mysql/community-server:8.4.9
+    container_name: mysql-2
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_HOST: "%"
+    command:
+      - --server-id=2
+      - --report-host=mysql-2
+      - --log-bin=mysql-bin
+      - --binlog_format=ROW
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+      - --sync_binlog=1
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 8s
+      timeout: 5s
+      retries: 8
+    networks:
+      - example
+
+  mysql-3:
+    image: container-registry.oracle.com/mysql/community-server:8.4.9
+    container_name: mysql-3
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_HOST: "%"
+    command:
+      - --server-id=3
+      - --report-host=mysql-3
+      - --log-bin=mysql-bin
+      - --binlog_format=ROW
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+      - --sync_binlog=1
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 8s
+      timeout: 5s
+      retries: 8
+    networks:
+      - example
+
+  # MySQL Router：应用接入层
+  mysql-router:
+    image: container-registry.oracle.com/mysql/community-router:8.4.9
+    container_name: mysql-router
+    restart: unless-stopped
+    depends_on:
+      mysql-1: { condition: service_healthy }
+      mysql-2: { condition: service_healthy }
+      mysql-3: { condition: service_healthy }
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_HOST: mysql-1
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "6446:6446"   # RW读写端口，自动路由主节点
+      - "6447:6447"   # RO只读端口，负载均衡至副本
+    networks:
+      - example
+    healthcheck:
+      test: mysql -h 127.0.0.1 -P 6446 -uroot -p${MYSQL_ROOT_PASSWORD} -e "SELECT 1"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  mysql-cluster-init:
+    image: container-registry.oracle.com/mysql/community-server:8.4.9
+    container_name: mysql-cluster-init
+    depends_on:
+      mysql-1: { condition: service_healthy }
+      mysql-2: { condition: service_healthy }
+      mysql-3: { condition: service_healthy }
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ./scripts/bootstrap.js:/bootstrap.js:ro
+    entrypoint:
+      - sh
+      - -c
+      - |
+        mysqlsh --js -f /bootstrap.js
+    restart: "no"
+    networks:
+      - example
+
+networks:
+  example:
+    driver: bridge  # 使用桥接驱动，默认选项
