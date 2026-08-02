@@ -19,5 +19,6 @@ echo  镜像标签   :  %IMAGE_ID%
 echo  ========================================
 echo.
 
-docker compose build
+docker compose -f business.yaml build
+docker compose -f business.yaml push
 pause

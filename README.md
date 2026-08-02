@@ -23,7 +23,7 @@ docker compose up -d
 启动的服务：
 - `balance` 网关，tcp端口 `:26888`,http端口 `:36888`
 - `chat` 微服务，端口 `:50051`
-- `mysql`、`redis`、`nats` 基础设施
+- `mysql`集群、`redis`集群、`nats`集群、mongo集群等基础设施
 
 ### 3. 压测
 
