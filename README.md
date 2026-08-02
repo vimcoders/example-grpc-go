@@ -28,7 +28,7 @@ startup.bat
 - `Activity`微服务，端口 `:50054`
 - `Item`微服务，端口 `:50055`
 - `Mail`微服务，端口 `:50056`
-- `mysql`集群、`redis`集群、`nats`集群、mongo集群等基础设施
+- `mysql`集群、`redis`集群、`nats`集群、`mongo`集群等基础设施
 
 ### 3. 压测
 
