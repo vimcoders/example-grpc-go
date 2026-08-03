@@ -47,7 +47,7 @@ func WithRedisService(e string) Option {
 	if len(e) == 0 {
 		return func(s *Server) {}
 	}
-	const defaultPoolSize = 1
+	const defaultPoolSize = 8
 	const defaultMaxRedirects = 3
 	const defaultFailingTimeoutSeconds = 15
 	opts := redis.UniversalOptions{

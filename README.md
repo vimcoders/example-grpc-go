@@ -91,7 +91,7 @@ server.RegisterService(&kubeapi.ChatService_ServiceDesc, &chat.Handler{})
 server.ListenAndServe(ctx, ":50051")
 ```
 
-参考客户端实现见 `kube_test.go`。
+参考客户端实现见 /bench/balance
 
 ## 依赖
 

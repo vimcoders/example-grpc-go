@@ -5,7 +5,6 @@ import (
 	"example/app/balance"
 	"example/generated/kubeapi"
 	"log/slog"
-	"math"
 	"net/http"
 	"os"
 	"os/signal"
@@ -64,13 +63,17 @@ func main() {
 	}
 	if e := os.Getenv("HTTPPort"); len(e) > 0 {
 		slog.Info("HTTPPort", "Port", e)
+		const maxHeaderBytes = 1 << 20
+		const readTimeout = 10 * time.Second
+		const writeTimeout = 10 * time.Second
+		const idleTimeout = 30 * time.Second
 		svr := &http.Server{
 			Addr:           e,
 			Handler:        s,
-			ReadTimeout:    10 * time.Second,
-			WriteTimeout:   10 * time.Second,
-			IdleTimeout:    30 * time.Second,
-			MaxHeaderBytes: math.MaxInt16,
+			ReadTimeout:    readTimeout,
+			WriteTimeout:   writeTimeout,
+			IdleTimeout:    idleTimeout,
+			MaxHeaderBytes: maxHeaderBytes,
 		}
 		go func() {
 			defer stop()
