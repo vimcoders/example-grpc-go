@@ -24,71 +24,73 @@ import (
 type Option func(*Server)
 
 type Options struct {
-	redisAddr []string `yaml:"redis"`
-	natsAddr  []string `yaml:"nats"`
+	encoding.Codec
+	nc              *nats.Conn
+	universalClient redis.UniversalClient
 }
 
 var defaultOptions = Options{
-	redisAddr: []string{
-		"redis-1:6379",
-		"redis-2:6379",
-		"redis-3:6379",
-		"redis-4:6379",
-		"redis-5:6379",
-		"redis-6:6379",
-	},
-	natsAddr: []string{
-		"nats://nats-1:4222",
-		"nats://nats-2:4222",
-		"nats://nats-3:4222",
-	},
+	Codec: encoding.GetCodec(encoding.Name()),
 }
 
 type Server struct {
 	Options
-	encoding.Codec
 	desc      *grpc.ServiceDesc
 	wg        sync.WaitGroup
 	listener  net.Listener
 	closed    context.CancelFunc
 	endpoints []RoundTripper
-	nc        *nats.Conn
 	kubeapi.UnimplementedPushServiceServer
-	universalClient redis.UniversalClient
 }
 
 func WithRedisService(e string) Option {
+	if len(e) == 0 {
+		return func(s *Server) {}
+	}
+	const defaultPoolSize = 1
+	const defaultMaxRedirects = 3
+	const defaultFailingTimeoutSeconds = 15
+	opts := redis.UniversalOptions{
+		Addrs: strings.Split(e, ","),
+		// 每个节点的连接池大小
+		PoolSize: defaultPoolSize,
+		// 集群重定向最大次数（自动发现时可能需要）
+		MaxRedirects: defaultMaxRedirects,
+		// 节点失败标记时间（自动避开故障节点）
+		FailingTimeoutSeconds: defaultFailingTimeoutSeconds,
+		// 按延迟路由（可选，提升性能）
+		RouteByLatency: true,
+	}
+	c := redis.NewUniversalClient(&opts)
 	return func(s *Server) {
 		if len(e) > 0 {
-			s.redisAddr = strings.Split(e, ",")
+			s.universalClient = c
 		}
 	}
 }
 
-func WithNatsService(e string) Option {
-	return func(s *Server) {
-		if len(e) > 0 {
-			s.natsAddr = strings.Split(e, ",")
-		}
+func WithNatsService(e string) (Option, error) {
+	if len(e) == 0 {
+		return func(s *Server) {}, nil
 	}
+	nc, err := nats.Connect(e)
+	if err != nil {
+		return nil, err
+	}
+	return func(s *Server) {
+		s.nc = nc
+	}, nil
 }
 
 func NewServer(opt ...Option) *Server {
 	opts := defaultOptions
 	var s = Server{
 		Options: opts,
-		Codec:   encoding.GetCodec(encoding.Name()),
 		desc:    &kubeapi.BalanceService_ServiceDesc,
 	}
 	for i := range opt {
 		opt[i](&s)
 	}
-	nc, err := nats.Connect(strings.Join(s.natsAddr, ","))
-	if err != nil {
-		panic(err)
-	}
-	s.nc = nc
-	s.universalClient = newUniversalClient(context.Background(), s.redisAddr)
 	return &s
 }
 
@@ -115,7 +117,9 @@ func (s *Server) ListenAndServe(ctx context.Context, addr string, opt ...Option)
 				desc:      s.desc,
 				Codec:     s.Codec,
 			}
-			_ = session.Handle(cancelCtx, conn)
+			if err := session.Handle(cancelCtx, conn); err != nil {
+				slog.Error("Handle", "error", err)
+			}
 		})
 	}
 }
@@ -154,7 +158,9 @@ func (s *Server) ListenAndServeTLS(ctx context.Context, addr string, opt ...Opti
 				desc:      s.desc,
 				Codec:     s.Codec,
 			}
-			_ = session.Handle(cancelCtx, conn)
+			if err := session.Handle(cancelCtx, conn); err != nil {
+				slog.Error("Handle", "error", err)
+			}
 		})
 	}
 }

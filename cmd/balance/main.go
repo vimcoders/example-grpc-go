@@ -19,10 +19,13 @@ func main() {
 	redisService, natsService := os.Getenv("RedisService"), os.Getenv("NatsService")
 	slog.Info("NewServer", "redis", redisService, "nats", natsService)
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	s := balance.NewServer(
-		balance.WithRedisService(redisService),
-		balance.WithNatsService(natsService),
-	)
+	opt, err := balance.WithNatsService(natsService)
+	if err != nil {
+		slog.Error("WithNatsService", "error", err)
+		return
+	}
+	opts := []balance.Option{opt, balance.WithRedisService(redisService)}
+	s := balance.NewServer(opts...)
 	for _, v := range []struct {
 		endpoint string
 		desc     grpc.ServiceDesc
@@ -37,7 +40,8 @@ func main() {
 	} {
 		slog.Info("RegisterService", "endpoint", v.endpoint)
 		if err := s.RegisterService(v.desc, v.endpoint); err != nil {
-			panic(err)
+			slog.Error("RegisterService", "endpoint", v.endpoint, "error", err)
+			return
 		}
 	}
 	if e := os.Getenv("TCPPort"); len(e) > 0 {
